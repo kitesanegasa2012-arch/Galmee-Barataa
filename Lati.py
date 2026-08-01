@@ -80,15 +80,12 @@ if "students_db" not in st.session_state:
   )
 
 if "targets" not in st.session_state:
-  # Default target structure for Grade 1-12
   st.session_state.targets = {
       str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
   }
 
 # ----------------- NAVIGATION / PAGES -----------------
-st.sidebar.markdown(
-    "### 🏫 Mana Barumsaa B/saa Kitesa Negasa"
-)  # Updated teacher name reference
+st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
 menu = st.sidebar.selectbox(
     "Filannoo Fuulaa (Navigation)",
     [
@@ -114,13 +111,10 @@ if menu == "1. Cover Page":
   st.write("---")
   st.subheader("📊 Lakkoofsa Barattootaa Galmaa'anii (Kutaa Kutaan)")
 
-  # Display live student counts per grade in attractive metric cards
   db = st.session_state.students_db
   cols = st.columns(4)
   for i in range(1, 13):
-    count = (
-        len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
-    )  # Safe empty check
+    count = len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
     with cols[(i - 1) % 4]:
       st.markdown(
           f"""
@@ -143,18 +137,12 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
     with col1:
       maqaa_guutuu = st.text_input("1. Maqaa Guutuu Barataa")
       koorniyaa = st.selectbox("2. Koorniyaa", ["Filadhu", "Dhiira", "Dhalaa"])
-      kutaa = st.selectbox(
-          "3. Kutaa", [str(i) for i in range(1, 13)]
-      )  # Grades 1 to 12
+      kutaa = st.selectbox("3. Kutaa", [str(i) for i in range(1, 13)])
 
-      st.markdown(
-          "**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**"
-      )  # Ethiopian calendar date options
+      st.markdown("**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**")
       b_col1, b_col2, b_col3 = st.columns(3)
-      b_guyyaa = b_col1.selectbox(
-          "Guyyaa", [str(i) for i in range(1, 31)]
-      )  # Standard range
-      b_ji'a = b_col2.selectbox(
+      b_guyyaa = b_col1.selectbox("Guyyaa", [str(i) for i in range(1, 32)])
+      b_jiia = b_col2.selectbox(
           "Ji'a",
           [
               "Meskerem",
@@ -175,7 +163,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
       b_bara = b_col3.number_input(
           "Bara Dhalootaa (Fkn: 2005)", min_value=1980, max_value=2025, value=2010
       )
-      # Calculate Age dynamically based on current Ethiopian year (~2018/2019)
       current_et_year = 2018
       umurii = current_et_year - b_bara
 
@@ -191,7 +178,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
       bara_addaan_kute = (
           st.selectbox(
               "Bara Addaan Kute (Yoo jiraate)",
-              ["On", "2005", "2006", "2007", "2008", "2009", "2010"]
+              ["Hin jiru", "2005", "2006", "2007", "2008", "2009", "2010"]
               + [str(y) for y in range(2011, 2027)],
           )
           if "deebii" in haala_galmee
@@ -244,7 +231,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
           value=75.0,
       )
 
-      # Automatic conditional check: If average < 50, flag red and map status alignment
       if avireejjii < 50:
         st.markdown(
             '<p style="color:red; font-weight:bold;">⚠️ Qabxiin kun 50 gadi waan ta’eef, haala galmee irratti "Kufe" jedhamee walsimsiifamuu qaba!</p>',
@@ -252,7 +238,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
         )
 
       barsiisaa = st.text_input("15. Barsiisaa Galmeessee")
-      guyyaa_galmee = str(datetime.now().date())  # Ethiopian calendar tracker layout
+      guyyaa_galmee = str(datetime.now().date())
 
     submitted = st.form_submit_button("💾 Save (Enter)")
 
@@ -264,7 +250,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             "Maqaa Guutuu": maqaa_guutuu,
             "Koorniyaa": koorniyaa,
             "Kutaa": kutaa,
-            "Bara Dhalootaa": f"{b_guyyaa}/{b_ji'a}/{b_bara}",
+            "Bara Dhalootaa": f"{b_guyyaa}/{b_jiia}/{b_bara}",
             "Umurii": umurii,
             "Haala Galmee": haala_galmee,
             "Bara Addaan Kute": bara_addaan_kute,
@@ -281,7 +267,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             "Guyyaa Galmee": guyyaa_galmee,
             "Barsiisaa Galmeessee": barsiisaa,
         }
-        # Append data safely
         st.session_state.students_db = pd.concat(
             [st.session_state.students_db, pd.DataFrame([new_data])],
             ignore_index=True,
@@ -296,7 +281,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
   password = st.text_input("Password Galchi", type="password")
 
-  # Simple secure teacher password check
   if password == "kitesa2019" or password == "admin123":
     st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa.")
 
@@ -319,9 +303,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     with tabA:
       st.markdown("### A. Guca Karoora Galmee Barataa 2019")
-      st.write(
-          "Kutaa 1 (Umurii 7) fi kutaa birooaf karoora Dhiiraa fi Dhalaa galchi:"
-      )
       with st.form("target_form"):
         selected_grade = st.selectbox(
             "Kutaa Filadhu", [str(i) for i in range(1, 13)]
@@ -369,7 +350,8 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     with tabD:
       st.markdown(
-          "### D. Gabaasa Lakkoofsaa Kutaa, Saalaa fi Umuriin (Fkn Umurii 7 + Kutaa 1)"
+          "### D. Gabaasa Lakkoofsaa Kutaa, Saalaa fi Umuriin (Fkn Umurii 7 +"
+          " Kutaa 1)"
       )
       if not db.empty:
         summary_d = (
@@ -383,7 +365,8 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     with tabE:
       st.markdown(
-          "### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii (Odeeffannoo Guutuu)"
+          "### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii (Odeeffannoo"
+          " Guutuu)"
       )
       if not db.empty:
         disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
@@ -395,37 +378,48 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
       st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa & Haala Maatii")
       if not db.empty:
         st.write("**Miidhama Qaamaa Gosaan:**")
-        st.dataframe(db[db["Miidhama Qaamaa"] == "Jira"]["Gosa Miidhamaa"].value_counts())
+        st.dataframe(
+            db[db["Miidhama Qaamaa"] == "Jira"]["Gosa Miidhamaa"].value_counts()
+        )
         st.write("**Haala Maatii (Lachuu hin qabne dabalatee):**")
         st.dataframe(db["Haala Maatii"].value_counts())
 
     with tabG:
       st.markdown(
-          "### G. Gabaasa Barattoota Irra Deebi'anii (Maqaa, Saala, Kutaa, Sababa)"
+          "### G. Gabaasa Barattoota Irra Deebi'anii (Maqaa, Saala, Kutaa,"
+          " Sababa)"
       )
       if not db.empty:
         repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
         st.dataframe(repeat_df[
-            ["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Haala Galmee", "Bara Addaan Kute"]
+            [
+                "Maqaa Guutuu",
+                "Koorniyaa",
+                "Kutaa",
+                "Haala Galmee",
+                "Bara Addaan Kute",
+            ]
         ])
       else:
         st.info("Deetaan hin jiru.")
 
     with tabH:
       st.markdown(
-          "### H. Gabaasa Lakkoofsaa Barattoota Irra Deebi'anii (Kutaa & Saalaan)"
+          "### H. Gabaasa Lakkoofsaa Barattoota Irra Deebi'anii (Kutaa &"
+          " Saalaan)"
       )
       if not db.empty:
         repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
         st.dataframe(
-            repeat_df.groupby(["Kutaa", "Koorniyaa", "Haala Galmee"]).size().reset_index(name="Baay'ina")
+            repeat_df.groupby(["Kutaa", "Koorniyaa", "Haala Galmee"])
+            .size()
+            .reset_index(name="Baay'ina")
         )
       else:
         st.info("Deetaan hin jiru.")
 
     with tabI:
       st.markdown("### I. Gabaasa Galmee Waligalaa Bara 2019 (Karoora vs Raawwii)")
-      # Mapping target vs actual execution summary table
       perf_data = []
       for k in range(1, 13):
         k_str = str(k)
