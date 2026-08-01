@@ -2,7 +2,54 @@ from datetime import datetime
 import io
 import pandas as pd
 import streamlit as st
+import streamlit as st
 
+# Lakkoofsa Eeyyamaa (Whitelist) - Namoota ati hayyamte qofa
+# As irratti emailoota ykn maqoota barii barsiisota eeyyamuu barbaaddu galchita
+APPROVED_USERS = {
+    "barsiisaa1@gmail.com": "keta1234",
+    "barsiisaa2@gmail.com": "naga5678",
+    "kitesa@gmail.com": "admin2026"  # Kun kan keeti
+}
+
+def check_login():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if not st.session_state.authenticated:
+        st.title("🔐 Seensa Appii Galmee Barattootaa")
+        st.write("Appii kana fayyadamuuf maaloo Email fi Jecha Darbii (Password) keessan galchaa.")
+        
+        with st.form("login_form"):
+            email = st.text_input("Email Barsiisaa")
+            password = st.text_input("Password", type="password")
+            submit = st.form_submit_button("Seeni (Login)")
+            
+            if submit:
+                if email in APPROVED_USERS and APPROVED_USERS[email] == password:
+                    st.session_state.authenticated = True
+                    st.session_state.current_user = email
+                    st.success("Baga nagaan dhuftan!")
+                    st.rerun()
+                else:
+                    st.error("Email ykn Password sirrii miti, ykn eeyyama hin qabdu!")
+        return False
+    return True
+
+# --- DHUMA LOGIN ---
+
+# Amma Appii kee Inni Guddaan kan kaatu yoo login ta'e qofaadha:
+if check_login():
+    st.sidebar.write(f"Seenteetta: {st.session_state.current_user}")
+    if st.sidebar.button("Bahu (Logout)"):
+        st.session_state.authenticated = False
+        st.rerun()
+
+    # ==========================================
+    # AS IRRATTI KOODDII APPII KEE INNI GUDDAA (GALMEE) JIRAATA
+    # ==========================================
+    st.title("📊 Dashboard Galmee Barattootaa")
+    st.write("Asitti hojiin galmee kee itti fufa...")
 # Page Configuration
 st.set_page_config(
     page_title="App Galmee Barattootaa - B/saa Kitesa Negasa",
