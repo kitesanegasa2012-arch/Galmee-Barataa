@@ -417,7 +417,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             else:
                 st.info("Deetaan galmaa'e hin jiru.")
 
-       with tabC:
+      with tabC:
             st.markdown("### C. Gabaasa Galmee Guyyaa Tokkoo")
             if not db.empty:
                 available_dates = db["Guyyaa Galmee (E.C)"].unique().tolist()
@@ -425,7 +425,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 day_df = db[db["Guyyaa Galmee (E.C)"] == selected_date]
                 
                 if not day_df.empty:
-                    # Gabaasa guyyaa tokkoos akkuma karooraa tartiibaan qopheessuu
                     raw_day = []
                     for k in range(1, 13):
                         sub_k = day_df[day_df["Kutaa"] == str(k)]
@@ -482,6 +481,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 )
             else:
                 st.info("Deetaan hin jiru.")
+
         with tabE:
             st.markdown("### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii")
             if not db.empty:
@@ -501,12 +501,11 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 else:
                     st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
 
-      with tabF:
+        with tabF:
             st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa (Tartiiba Kutaatiin)")
             if not db.empty:
                 disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
                 if not disabled_df.empty:
-                    # Gosa miidhamaa fi kutaa walitti fiduun lakkaa'uu
                     pivot_dis = disabled_df.pivot_table(
                         index="Gosa Miidhamaa", 
                         columns="Kutaa", 
@@ -549,7 +548,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 else:
                     st.info("Barataan irra deebii galmaa'e hin jiru.")
 
-       with tabH:
+        with tabH:
             st.markdown("### H. Gabaasa Lakkoofsaa Irra Deebii (Tartiiba Kutaatiin)")
             if not db.empty:
                 repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
@@ -601,7 +600,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     "Raawwii Ida'ama": r_tot
                 })
             
-            # Grouping logic for Karoora vs Raawwii
             rows_1_6_kd = sum(r["Karoora Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
             rows_1_6_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
             rows_1_6_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
@@ -618,7 +616,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             rows_9_12_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
 
             final_perf = []
-            # 1 to 6
             for r in perf_raw:
                 if int(r["Kutaa_Num"]) <= 6:
                     final_perf.append(r)
@@ -629,7 +626,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 "Karoora Ida'ama": rows_1_6_kd + rows_1_6_kdh, "Raawwii Ida'ama": rows_1_6_rd + rows_1_6_rdh
             })
 
-            # 7 to 8
             for r in perf_raw:
                 if 7 <= int(r["Kutaa_Num"]) <= 8:
                     final_perf.append(r)
@@ -640,7 +636,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 "Karoora Ida'ama": rows_7_8_kd + rows_7_8_kdh, "Raawwii Ida'ama": rows_7_8_rd + rows_7_8_rdh
             })
 
-            # Ida'ama 1 - 8
             final_perf.append({
                 "Kutaa_Num": "8_tot", "Kutaa": "Ida'ama Waliigalaa (1 - 8)",
                 "Karoora Dhiira": rows_1_6_kd + rows_7_8_kd, "Raawwii Dhiira": rows_1_6_rd + rows_7_8_rd,
@@ -649,7 +644,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 "Raawwii Ida'ama": (rows_1_6_rd + rows_7_8_rd) + (rows_1_6_rdh + rows_7_8_rdh)
             })
 
-            # 9 to 12
             for r in perf_raw:
                 if int(r["Kutaa_Num"]) >= 9:
                     final_perf.append(r)
@@ -660,7 +654,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 "Karoora Ida'ama": rows_9_12_kd + rows_9_12_kdh, "Raawwii Ida'ama": rows_9_12_rd + rows_9_12_rdh
             })
 
-            # Waliigalaa 1 - 12
             tot_kd = rows_1_6_kd + rows_7_8_kd + rows_9_12_kd
             tot_rd = rows_1_6_rd + rows_7_8_rd + rows_9_12_rd
             tot_kdh = rows_1_6_kdh + rows_7_8_kdh + rows_9_12_kdh
@@ -673,7 +666,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             })
 
             perf_df = pd.DataFrame(final_perf)
-            # Kolonii 'Kutaa_Num' haquuf
             display_perf_df = perf_df.drop(columns=["Kutaa_Num"])
             
             st.dataframe(display_perf_df, use_container_width=True)
@@ -713,6 +705,5 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                             st.session_state.students_db = db.drop(selected_idx).reset_index(drop=True)
                             st.success("Barataan kun haqameera!")
                             st.rerun()
-
     elif password != "":
         st.error("Password sirrii miti! Irra deebi'ii yaali.")
