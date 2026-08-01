@@ -417,25 +417,43 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             else:
                 st.info("Deetaan galmaa'e hin jiru.")
 
-        with tabC:
+       with tabC:
             st.markdown("### C. Gabaasa Galmee Guyyaa Tokkoo")
             if not db.empty:
                 available_dates = db["Guyyaa Galmee (E.C)"].unique().tolist()
-                selected_date = st.selectbox("Guyyaa Filadhu (E.C)", available_dates)
+                selected_date = st.selectbox("Guyyaa Filadhu (E.C)", available_dates, key="select_date_c")
                 day_df = db[db["Guyyaa Galmee (E.C)"] == selected_date]
-                st.dataframe(day_df, use_container_width=True)
+                
+                if not day_df.empty:
+                    # Gabaasa guyyaa tokkoos akkuma karooraa tartiibaan qopheessuu
+                    raw_day = []
+                    for k in range(1, 13):
+                        sub_k = day_df[day_df["Kutaa"] == str(k)]
+                        d_c = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                        dh_c = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                        raw_day.append({
+                            "Kutaa_Num": str(k),
+                            "Kutaa": f"Kutaa {k}",
+                            "Dhiira": d_c,
+                            "Dhalaa": dh_c,
+                            "Ida'ama": d_c + dh_c
+                        })
+                    grouped_day_df = generate_grouped_report(raw_day, title_col_name="Kutaa")
+                    st.dataframe(grouped_day_df, use_container_width=True)
 
-                buffer_c = io.BytesIO()
-                with pd.ExcelWriter(buffer_c, engine="openpyxl") as writer:
-                    day_df.to_excel(writer, sheet_name="Gabaasa_Guyyaa", index=False)
-                st.download_button(
-                    label="📥 Gabaasa Guyyaa Kanaa Excel-tti Download / Print",
-                    data=buffer_c.getvalue(),
-                    file_name=f"Gabaasa_Guyyaa_{selected_date.replace('/', '-')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                )
+                    buffer_c = io.BytesIO()
+                    with pd.ExcelWriter(buffer_c, engine="openpyxl") as writer:
+                        grouped_day_df.to_excel(writer, sheet_name="Gabaasa_Guyyaa", index=False)
+                    st.download_button(
+                        label="📥 Gabaasa Guyyaa Kanaa Excel-tti Download / Print",
+                        data=buffer_c.getvalue(),
+                        file_name=f"Gabaasa_Guyyaa_{selected_date.replace('/', '-')}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Guyyaa filatame kana deetaan hin jiru.")
             else:
-                st.info("Deetaan hin jiru.")
+                st.info("Deetaan waligalaa hin jiru.")
 
         with tabD:
             st.markdown("### D. Gabaasa Galmee Hanga Ammaatti")
@@ -464,7 +482,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 )
             else:
                 st.info("Deetaan hin jiru.")
-
         with tabE:
             st.markdown("### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii")
             if not db.empty:
@@ -484,23 +501,34 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 else:
                     st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
 
-        with tabF:
-            st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa")
+      with tabF:
+            st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa (Tartiiba Kutaatiin)")
             if not db.empty:
                 disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
                 if not disabled_df.empty:
-                    count_df = disabled_df["Gosa Miidhamaa"].value_counts().reset_index(name="Baay'ina")
-                    st.dataframe(count_df, use_container_width=True)
+                    # Gosa miidhamaa fi kutaa walitti fiduun lakkaa'uu
+                    pivot_dis = disabled_df.pivot_table(
+                        index="Gosa Miidhamaa", 
+                        columns="Kutaa", 
+                        aggfunc="size", 
+                        fill_value=0
+                    ).reset_index()
+                    
+                    st.dataframe(pivot_dis, use_container_width=True)
 
                     buffer_f = io.BytesIO()
                     with pd.ExcelWriter(buffer_f, engine="openpyxl") as writer:
-                        count_df.to_excel(writer, sheet_name="Lakkoofsa_Miidhamaa", index=False)
+                        pivot_dis.to_excel(writer, sheet_name="Lakkoofsa_Miidhamaa", index=False)
                     st.download_button(
                         label="📥 Lakkoofsa Miidhamaa Excel-tti Download",
                         data=buffer_f.getvalue(),
                         file_name="Lakkoofsa_Gosa_Miidhamaa.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     )
+                else:
+                    st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
 
         with tabG:
             st.markdown("### G. Gabaasa Barattoota Irra Deebi'anii")
@@ -521,26 +549,42 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 else:
                     st.info("Barataan irra deebii galmaa'e hin jiru.")
 
-        with tabH:
-            st.markdown("### H. Gabaasa Lakkoofsaa Irra Deebii")
+       with tabH:
+            st.markdown("### H. Gabaasa Lakkoofsaa Irra Deebii (Tartiiba Kutaatiin)")
             if not db.empty:
                 repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
                 if not repeat_df.empty:
-                    pivot_rep = repeat_df.groupby(["Kutaa", "Koorniyaa"]).size().unstack(fill_value=0).reset_index()
-                    st.dataframe(pivot_rep, use_container_width=True)
+                    raw_rep = []
+                    for k in range(1, 13):
+                        sub_k = repeat_df[repeat_df["Kutaa"] == str(k)]
+                        d_c = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                        dh_c = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                        raw_rep.append({
+                            "Kutaa_Num": str(k),
+                            "Kutaa": f"Kutaa {k}",
+                            "Dhiira": d_c,
+                            "Dhalaa": dh_c,
+                            "Ida'ama": d_c + dh_c
+                        })
+                    grouped_rep_df = generate_grouped_report(raw_rep, title_col_name="Kutaa")
+                    st.dataframe(grouped_rep_df, use_container_width=True)
 
                     buffer_h = io.BytesIO()
                     with pd.ExcelWriter(buffer_h, engine="openpyxl") as writer:
-                        pivot_rep.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
+                        grouped_rep_df.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
                     st.download_button(
                         label="📥 Lakkoofsa Irra Deebii Excel-tti Download",
                         data=buffer_h.getvalue(),
                         file_name="Lakkoofsa_Irra_Deebii.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     )
+                else:
+                    st.info("Barataan irra deebii galmaa'e hin jiru.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
 
         with tabI:
-            st.markdown("### I. Gabaasa Waligalaa 2019 (Karoora vs Raawwii)")
+            st.markdown("### I. Gabaasa Waligalaa 2019 (Karoora vs Raawwii - Tartiiba Kutaatiin)")
             perf_raw = []
             for k in range(1, 13):
                 t_d = st.session_state.targets[str(k)]["Dhiira"]
@@ -557,12 +601,86 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     "Raawwii Ida'ama": r_tot
                 })
             
-            perf_df = pd.DataFrame(perf_raw)
-            st.dataframe(perf_df, use_container_width=True)
+            # Grouping logic for Karoora vs Raawwii
+            rows_1_6_kd = sum(r["Karoora Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
+            rows_1_6_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
+            rows_1_6_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
+            rows_1_6_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
+            
+            rows_7_8_kd = sum(r["Karoora Dhiira"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+            rows_7_8_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+            rows_7_8_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+            rows_7_8_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+
+            rows_9_12_kd = sum(r["Karoora Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+            rows_9_12_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+            rows_9_12_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+            rows_9_12_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+
+            final_perf = []
+            # 1 to 6
+            for r in perf_raw:
+                if int(r["Kutaa_Num"]) <= 6:
+                    final_perf.append(r)
+            final_perf.append({
+                "Kutaa_Num": "6", "Kutaa": "Ida'ama Kutaa 1 - 6",
+                "Karoora Dhiira": rows_1_6_kd, "Raawwii Dhiira": rows_1_6_rd,
+                "Karoora Dhalaa": rows_1_6_kdh, "Raawwii Dhalaa": rows_1_6_rdh,
+                "Karoora Ida'ama": rows_1_6_kd + rows_1_6_kdh, "Raawwii Ida'ama": rows_1_6_rd + rows_1_6_rdh
+            })
+
+            # 7 to 8
+            for r in perf_raw:
+                if 7 <= int(r["Kutaa_Num"]) <= 8:
+                    final_perf.append(r)
+            final_perf.append({
+                "Kutaa_Num": "8", "Kutaa": "Ida'ama Kutaa 7 - 8",
+                "Karoora Dhiira": rows_7_8_kd, "Raawwii Dhiira": rows_7_8_rd,
+                "Karoora Dhalaa": rows_7_8_kdh, "Raawwii Dhalaa": rows_7_8_rdh,
+                "Karoora Ida'ama": rows_7_8_kd + rows_7_8_kdh, "Raawwii Ida'ama": rows_7_8_rd + rows_7_8_rdh
+            })
+
+            # Ida'ama 1 - 8
+            final_perf.append({
+                "Kutaa_Num": "8_tot", "Kutaa": "Ida'ama Waliigalaa (1 - 8)",
+                "Karoora Dhiira": rows_1_6_kd + rows_7_8_kd, "Raawwii Dhiira": rows_1_6_rd + rows_7_8_rd,
+                "Karoora Dhalaa": rows_1_6_kdh + rows_7_8_kdh, "Raawwii Dhalaa": rows_1_6_rdh + rows_7_8_rdh,
+                "Karoora Ida'ama": (rows_1_6_kd + rows_7_8_kd) + (rows_1_6_kdh + rows_7_8_kdh),
+                "Raawwii Ida'ama": (rows_1_6_rd + rows_7_8_rd) + (rows_1_6_rdh + rows_7_8_rdh)
+            })
+
+            # 9 to 12
+            for r in perf_raw:
+                if int(r["Kutaa_Num"]) >= 9:
+                    final_perf.append(r)
+            final_perf.append({
+                "Kutaa_Num": "12", "Kutaa": "Ida'ama Kutaa 9 - 12",
+                "Karoora Dhiira": rows_9_12_kd, "Raawwii Dhiira": rows_9_12_rd,
+                "Karoora Dhalaa": rows_9_12_kdh, "Raawwii Dhalaa": rows_9_12_rdh,
+                "Karoora Ida'ama": rows_9_12_kd + rows_9_12_kdh, "Raawwii Ida'ama": rows_9_12_rd + rows_9_12_rdh
+            })
+
+            # Waliigalaa 1 - 12
+            tot_kd = rows_1_6_kd + rows_7_8_kd + rows_9_12_kd
+            tot_rd = rows_1_6_rd + rows_7_8_rd + rows_9_12_rd
+            tot_kdh = rows_1_6_kdh + rows_7_8_kdh + rows_9_12_kdh
+            tot_rdh = rows_1_6_rdh + rows_7_8_rdh + rows_9_12_rdh
+            final_perf.append({
+                "Kutaa_Num": "12_tot", "Kutaa": "Waliigalaa (1 - 12)",
+                "Karoora Dhiira": tot_kd, "Raawwii Dhiira": tot_rd,
+                "Karoora Dhalaa": tot_kdh, "Raawwii Dhalaa": tot_rdh,
+                "Karoora Ida'ama": tot_kd + tot_kdh, "Raawwii Ida'ama": tot_rd + tot_rdh
+            })
+
+            perf_df = pd.DataFrame(final_perf)
+            # Kolonii 'Kutaa_Num' haquuf
+            display_perf_df = perf_df.drop(columns=["Kutaa_Num"])
+            
+            st.dataframe(display_perf_df, use_container_width=True)
 
             buffer_i = io.BytesIO()
             with pd.ExcelWriter(buffer_i, engine="openpyxl") as writer:
-                perf_df.to_excel(writer, sheet_name="Karoora_vs_Raawwii", index=False)
+                display_perf_df.to_excel(writer, sheet_name="Karoora_vs_Raawwii", index=False)
             st.download_button(
                 label="📥 Karoora vs Raawwii Excel-tti Download / Print",
                 data=buffer_i.getvalue(),
