@@ -349,9 +349,12 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 "J. Edit/Delete Data",
             ]
         )
+tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs([
+            "Karoora", "Guutuu", "Guyyaa", "Hanga Ammaa", "Miidhamaa", 
+            "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii", "Karoora vs Raawwii", "Edit/Delete"
+        ])
 
-        db = st.session_state.students_db
-with tabA:
+        with tabA:
             st.markdown("### A. Guca Karoora Galmee Barataa (Dhiira, Dhalaa, Ida'ama)")
             with st.form("target_form"):
                 selected_grade = st.selectbox(
