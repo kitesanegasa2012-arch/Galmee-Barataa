@@ -1,5 +1,6 @@
-from datetime import datetime
+import datetime
 import io
+import os
 import pandas as pd
 import streamlit as st
 
@@ -10,7 +11,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# Custom CSS for Styling (Border, Background, Colors, Font size & styles)
+# Custom CSS for Styling
 st.markdown(
     """
     <style>
@@ -53,38 +54,66 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Session State Initialization for Database & Targets
-if "students_db" not in st.session_state:
-  st.session_state.students_db = pd.DataFrame(
-      columns=[
-          "Maqaa Guutuu",
-          "Koorniyaa",
-          "Kutaa",
-          "Bara Dhalootaa",
-          "Umurii",
-          "Haala Galmee",
-          "Bara Addaan Kute",
-          "Haala Maatii",
-          "Miidhama Qaamaa",
-          "Gosa Miidhamaa",
-          "Bakka Dhalootaa (Godina/Aanaa/Ganda)",
-          "Maqaa Haadhaa/Guddistuu",
-          "FAN ID",
-          "Lakk Bilbila Barataa",
-          "Lakk Bilbila Maatii",
-          "M/B Duraan Itti Barachaa Ture",
-          "Avireejjii Qabxii",
-          "Guyyaa Galmee",
-          "Barsiisaa Galmeessee",
-      ]
-  )
+DB_FILE = "students_database.csv"
+TARGETS_FILE = "targets_database.csv"
 
-if "targets" not in st.session_state:
-  st.session_state.targets = {
-      str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
-  }
 
-# ----------------- NAVIGATION / PAGES -----------------
+# Persistent Database Loading & Saving functions
+def load_data():
+  if os.path.exists(DB_FILE):
+    return pd.read_csv(DB_FILE)
+  else:
+    return pd.DataFrame(
+        columns=[
+            "Maqaa Guutuu",
+            "Koorniyaa",
+            "Kutaa",
+            "Bara Dhalootaa",
+            "Umurii",
+            "Haala Galmee",
+            "Bara Addaan Kute",
+            "Haala Maatii",
+            "Miidhama Qaamaa",
+            "Gosa Miidhamaa",
+            "Bakka Dhalootaa (Godina/Aanaa/Ganda)",
+            "Maqaa Haadhaa/Guddistuu",
+            "FAN ID",
+            "Lakk Bilbila Barataa",
+            "Lakk Bilbila Maatii",
+            "M/B Duraan Itti Barachaa Ture",
+            "Avireejjii Qabxii",
+            "Guyyaa Galmee",
+            "Barsiisaa Galmeessee",
+        ]
+    )
+
+
+def save_data(df):
+  df.to_csv(DB_FILE, index=False)
+
+
+def load_targets():
+  if os.path.exists(TARGETS_FILE):
+    return pd.read_csv(TARGETS_FILE)
+  else:
+    init_targets = []
+    for i in range(1, 13):
+      init_targets.append({"Kutaa": str(i), "Dhiira": 0, "Dhalaa": 0})
+    return pd.DataFrame(init_targets)
+
+
+def save_targets_df(df):
+  df.to_csv(TARGETS_FILE, index=False)
+
+
+# Initialize Session States
+if "db" not in st.session_state:
+  st.session_state.db = load_data()
+
+if "targets_df" not in st.session_state:
+  st.session_state.targets_df = load_targets()
+
+# ----------------- NAVIGATION -----------------
 st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
 menu = st.sidebar.selectbox(
     "Filannoo Fuulaa (Navigation)",
@@ -111,10 +140,12 @@ if menu == "1. Cover Page":
   st.write("---")
   st.subheader("📊 Lakkoofsa Barattootaa Galmaa'anii (Kutaa Kutaan)")
 
-  db = st.session_state.students_db
+  db = st.session_state.db
   cols = st.columns(4)
   for i in range(1, 13):
-    count = len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
+    count = (
+        len(db[db["Kutaa"].astype(str) == str(i)]) if not db.empty else 0
+    )
     with cols[(i - 1) % 4]:
       st.markdown(
           f"""
@@ -127,11 +158,11 @@ if menu == "1. Cover Page":
           unsafe_allow_html=True,
       )
 
-# ----------------- 2. DASHBOARD GALMEE BARATAA (FOOMII) -----------------
+# ----------------- 2. DASHBOARD GALMEE BARATTOOTAA (FOOMII) -----------------
 elif menu == "2. Dashboard Galmee Barataa (Foomii)":
   st.subheader("📝 Foomii Galmee Barattootaa Haaraa")
 
-  with st.form("registration_form"):
+  with st.form("registration_form", clear_on_submit=True):
     col1, col2 = st.columns(2)
 
     with col1:
@@ -238,20 +269,20 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
         )
 
       barsiisaa = st.text_input("15. Barsiisaa Galmeessee")
-      guyyaa_galmee = str(datetime.now().date())
+      guyyaa_galmee = str(datetime.datetime.now().date())
 
     submitted = st.form_submit_button("💾 Save (Enter)")
 
     if submitted:
-      if not maqaa_guutuu or not fan_id:
-        st.error("Maaloo Maqaa Guutuu fi FAN ID guuti!")
+      if not maqaa_guutuu or not fan_id or koorniyaa == "Filadhu":
+        st.error("Maaloo Maqaa Guutuu, Koorniyaa fi FAN ID sirriitti guuti!")
       else:
         new_data = {
             "Maqaa Guutuu": maqaa_guutuu,
             "Koorniyaa": koorniyaa,
-            "Kutaa": kutaa,
+            "Kutaa": str(kutaa),
             "Bara Dhalootaa": f"{b_guyyaa}/{b_jiia}/{b_bara}",
-            "Umurii": umurii,
+            "Umurii": int(umurii),
             "Haala Galmee": haala_galmee,
             "Bara Addaan Kute": bara_addaan_kute,
             "Haala Maatii": haala_maatii,
@@ -263,16 +294,17 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             "Lakk Bilbila Barataa": lakk_bilbila_barataa,
             "Lakk Bilbila Maatii": lakk_bilbila_maatii,
             "M/B Duraan Itti Barachaa Ture": mb_duraan,
-            "Avireejjii Qabxii": avireejjii,
+            "Avireejjii Qabxii": float(avireejjii),
             "Guyyaa Galmee": guyyaa_galmee,
             "Barsiisaa Galmeessee": barsiisaa,
         }
-        st.session_state.students_db = pd.concat(
-            [st.session_state.students_db, pd.DataFrame([new_data])],
-            ignore_index=True,
+
+        st.session_state.db = pd.concat(
+            [st.session_state.db, pd.DataFrame([new_data])], ignore_index=True
         )
+        save_data(st.session_state.db)
         st.success(
-            f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!"
+            f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'ee kuufameera!"
         )
 
 # ----------------- 3. DASHBOARD BARSIIKAA / GABAASAA (PASSWORD PROTECTED) -----------------
@@ -299,29 +331,44 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         ]
     )
 
-    db = st.session_state.students_db
+    db = st.session_state.db
+    targets_df = st.session_state.targets_df
 
     with tabA:
       st.markdown("### A. Guca Karoora Galmee Barataa 2019")
+      st.write("Kutaa hundaaf karoora Dhiiraa fi Dhalaa galchi:")
       with st.form("target_form"):
         selected_grade = st.selectbox(
             "Kutaa Filadhu", [str(i) for i in range(1, 13)]
         )
+        curr_row = targets_df[targets_df["Kutaa"].astype(str) == selected_grade]
+        def_dhiira = (
+            int(curr_row["Dhiira"].values[0]) if not curr_row.empty else 0
+        )
+        def_dhalaa = (
+            int(curr_row["Dhalaa"].values[0]) if not curr_row.empty else 0
+        )
+
         t_dhiira = st.number_input(
-            "Karoora Dhiiraa",
-            min_value=0,
-            value=st.session_state.targets[selected_grade]["Dhiira"],
+            "Karoora Dhiiraa", min_value=0, value=def_dhiira
         )
         t_dhalaa = st.number_input(
-            "Karoora Dhalaa",
-            min_value=0,
-            value=st.session_state.targets[selected_grade]["Dhalaa"],
+            "Karoora Dhalaa", min_value=0, value=def_dhalaa
         )
         save_target = st.form_submit_button("Karoora Galchi")
+
         if save_target:
-          st.session_state.targets[selected_grade]["Dhiira"] = t_dhiira
-          st.session_state.targets[selected_grade]["Dhalaa"] = t_dhalaa
+          targets_df.loc[
+              targets_df["Kutaa"].astype(str) == selected_grade, "Dhiira"
+          ] = t_dhiira
+          targets_df.loc[
+              targets_df["Kutaa"].astype(str) == selected_grade, "Dhalaa"
+          ] = t_dhalaa
+          st.session_state.targets_df = targets_df
+          save_targets_df(targets_df)
           st.success(f"Karoora Kutaa {selected_grade} galmeeffameera!")
+
+      st.dataframe(targets_df)
 
     with tabB:
       st.markdown("### B. Guca Gabaasaa Waligalaa Barataa (Excel Download)")
@@ -334,7 +381,9 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             label="📥 Excel-tti Download Gochuu",
             data=buffer.getvalue(),
             file_name="Gabaasa_Waligalaa_Barattootaa.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            mime=(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ),
         )
       else:
         st.info("Deetaan galmaa'e hin jiru.")
@@ -342,17 +391,17 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
     with tabC:
       st.markdown("### C. Guca Gabaasaa Galmee Guyyaa (Kutaa 1, Umurii 7)")
       if not db.empty:
-        filtered_c = db[(db["Kutaa"] == "1") & (db["Umurii"] == 7)]
+        filtered_c = db[
+            (db["Kutaa"].astype(str) == "1")
+            & (db["Umurii"].astype(int) == 7)
+        ]
         st.write(f"Baay'ina Barattoota Kutaa 1 (Umurii 7): {len(filtered_c)}")
         st.dataframe(filtered_c)
       else:
         st.info("Deetaan hin jiru.")
 
     with tabD:
-      st.markdown(
-          "### D. Gabaasa Lakkoofsaa Kutaa, Saalaa fi Umuriin (Fkn Umurii 7 +"
-          " Kutaa 1)"
-      )
+      st.markdown("### D. Gabaasa Lakkoofsaa Kutaa, Saalaa fi Umuriin")
       if not db.empty:
         summary_d = (
             db.groupby(["Kutaa", "Umurii", "Koorniyaa"])
@@ -383,6 +432,8 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         )
         st.write("**Haala Maatii (Lachuu hin qabne dabalatee):**")
         st.dataframe(db["Haala Maatii"].value_counts())
+      else:
+        st.info("Deetaan hin jiru.")
 
     with tabG:
       st.markdown(
@@ -423,17 +474,28 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
       perf_data = []
       for k in range(1, 13):
         k_str = str(k)
-        t_d = st.session_state.targets[k_str]["Dhiira"]
-        t_dh = st.session_state.targets[k_str]["Dhalaa"]
+        t_row = targets_df[targets_df["Kutaa"].astype(str) == k_str]
+        t_d = int(t_row["Dhiira"].values[0]) if not t_row.empty else 0
+        t_dh = int(t_row["Dhalaa"].values[0]) if not t_row.empty else 0
         t_tot = t_d + t_dh
 
         r_d = (
-            len(db[(db["Kutaa"] == k_str) & (db["Koorniyaa"] == "Dhiira")])
+            len(
+                db[
+                    (db["Kutaa"].astype(str) == k_str)
+                    & (db["Koorniyaa"] == "Dhiira")
+                ]
+            )
             if not db.empty
             else 0
         )
         r_dh = (
-            len(db[(db["Kutaa"] == k_str) & (db["Koorniyaa"] == "Dhalaa")])
+            len(
+                db[
+                    (db["Kutaa"].astype(str) == k_str)
+                    & (db["Koorniyaa"] == "Dhalaa")
+                ]
+            )
             if not db.empty
             else 0
         )
@@ -466,13 +528,11 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             max_value=max(0, len(db) - 1),
             step=1,
         )
-        st.write(db.iloc[idx_to_modify])
+        st.write(db.iloc[idx_to_modify : idx_to_modify + 1])
 
-        col_del, col_edit = st.columns(2)
-        if col_del.button("🗑️ Barataa Kana Haquu (Delete)"):
-          st.session_state.students_db = db.drop(idx_to_modify).reset_index(
-              drop=True
-          )
+        if st.button("🗑️ Barataa Kana Haquu (Delete)"):
+          st.session_state.db = db.drop(idx_to_modify).reset_index(drop=True)
+          save_data(st.session_state.db)
           st.success("Deetaan barataa haqameera!")
           st.rerun()
       else:
