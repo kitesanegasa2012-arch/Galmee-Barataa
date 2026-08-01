@@ -185,7 +185,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
     default_aanaa = get_last_location(db_existing, "Aanaa")
     default_ganda = get_last_location(db_existing, "Ganda")
 
-    with st.form("registration_form"):
+    with st.form("registration_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -275,18 +275,61 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
                 st.error("Maaloo Maqaa Guutuu barataa guuti!")
             else:
                 existing_df = st.session_state.students_db
-                duplicate_found = False
+                existing_match = None
                 if not existing_df.empty:
                     match_name = existing_df["Maqaa Guutuu"].str.strip().str.lower() == maqaa_guutuu.strip().lower()
-                    match_grade = existing_df["Kutaa"] == kutaa
                     if fan_id.strip():
                         match_fan = existing_df["FAN ID"].str.strip().str.lower() == fan_id.strip().lower()
-                        duplicate_found = ((match_name & match_grade) | (match_fan & (existing_df["FAN ID"] != ""))).any()
+                        matched_rows = existing_df[match_name | (match_fan & (existing_df["FAN ID"] != ""))]
                     else:
-                        duplicate_found = (match_name & match_grade).any()
+                        matched_rows = existing_df[match_name]
+                    
+                    if not matched_rows.empty:
+                        existing_match = matched_rows.iloc[0]
 
-                if duplicate_found:
-                    st.error(f"⚠️ Galmawwiin hin danda'amne! Barataan '{maqaa_guutuu}' Kutaa {kutaa} keessatti duraanuu galmaa'eera (2 yeroo ta'uuf hin hayyamamu)!")
+                if existing_match is not None:
+                    ex_kutaa = existing_match["Kutaa"]
+                    ex_daree = existing_match["Daree (Section)"]
+                    st.markdown(
+                        f"""
+                        <div style="background-color: #ffcccc; padding: 15px; border-radius: 8px; border: 1px solid #ff4d4d; margin-bottom: 15px;">
+                            <p style="color: #cc0000; font-weight: bold; font-size: 16px; margin: 0;">
+                                ⚠️ Barataan kun kanaan dura Kutaa {ex_kutaa}, Daree {ex_daree} keessatti galmoofteetta! Waanta'ef irra deebiin galmooftaa? Sababni barataan maqaa tokkichaa kutaa garaagaraa jiraachuu mala.
+                            </p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                    # Proceed to register anyway since same name can exist across different grades
+                    new_data = {
+                        "Maqaa Guutuu": maqaa_guutuu,
+                        "Koorniyaa": koorniyaa,
+                        "Kutaa": kutaa,
+                        "Daree (Section)": daree,
+                        "Bara Dhalootaa": f"{b_guyyaa}/{b_jiia}/{b_bara}",
+                        "Umurii": umurii,
+                        "Haala Galmee": haala_galmee,
+                        "Bara Addaan Kute": bara_addaan_kute,
+                        "Haala Maatii": haala_maatii,
+                        "Miidhama Qaamaa": miidhama_qaamaa,
+                        "Gosa Miidhamaa": gosa_miidhamaa,
+                        "Godina": godina,
+                        "Aanaa": aanaa,
+                        "Ganda": ganda,
+                        "Maqaa Haadhaa/Guddistuu": maqaa_haadhaa,
+                        "FAN ID": fan_id,
+                        "Lakk Bilbila Barataa": lakk_bilbila_barataa,
+                        "Lakk Bilbila Maatii": lakk_bilbila_maatii,
+                        "M/B Duraan Itti Barachaa Ture": mb_duraan,
+                        "Avireejjii Qabxii": avireejjii,
+                        "Guyyaa Galmee (E.C)": guyyaa_galmee_ec,
+                        "Barsiisaa Galmeessee": barsiisaa,
+                    }
+                    st.session_state.students_db = pd.concat(
+                        [st.session_state.students_db, pd.DataFrame([new_data])],
+                        ignore_index=True,
+                    )
+                    st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
                 else:
                     new_data = {
                         "Maqaa Guutuu": maqaa_guutuu,
@@ -515,15 +558,17 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 st.info("Deetaan waligalaa hin jiru.")
 
         with tabG:
-            st.markdown("### G. Gabaasa Barattoota Irra Deebi'anii")
+            st.markdown("### G. Gabaasa Barattoota Irra Deebi'anii (Kutaa Deebi'an / Kutee Deebi'e)")
             if not db.empty:
                 repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
                 if not repeat_df.empty:
-                    st.dataframe(repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Haala Galmee"]], use_container_width=True)
+                    display_repeat_df = repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Umurii", "Haala Galmee", "Bara Addaan Kute"]].copy()
+                    display_repeat_df.columns = ["Maqaa Guutuu", "Saala", "Kutaa", "Umurii", "Haala Irra Deebii", "Bara Irra Deebii"]
+                    st.dataframe(display_repeat_df, use_container_width=True)
                     
                     buffer_g = io.BytesIO()
                     with pd.ExcelWriter(buffer_g, engine="openpyxl") as writer:
-                        repeat_df.to_excel(writer, sheet_name="Irra_Deebii", index=False)
+                        display_repeat_df.to_excel(writer, sheet_name="Irra_Deebii", index=False)
                     st.download_button(
                         label="📥 Barattoota Irra Deebii Excel-tti Download",
                         data=buffer_g.getvalue(),
@@ -576,31 +621,56 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 t_d = st.session_state.targets[str(k)]["Dhiira"]
                 t_dh = st.session_state.targets[str(k)]["Dhalaa"]
                 r_d, r_dh, r_tot = get_grade_rows(db, [k])
+                
+                # Percentages calculation
+                p_d = round((r_d / t_d * 100), 1) if t_d > 0 else 0.0
+                p_dh = round((r_dh / t_dh * 100), 1) if t_dh > 0 else 0.0
+                t_tot = t_d + t_dh
+                p_tot = round((r_tot / t_tot * 100), 1) if t_tot > 0 else 0.0
+
                 perf_raw.append({
                     "Kutaa_Num": str(k),
                     "Kutaa": f"Kutaa {k}",
                     "Karoora Dhiira": t_d,
-                    "Raawwii Dhiira": r_d,
                     "Karoora Dhalaa": t_dh,
+                    "Karoora Ida'ama": t_tot,
+                    "Raawwii Dhiira": r_d,
                     "Raawwii Dhalaa": r_dh,
-                    "Karoora Ida'ama": t_d + t_dh,
-                    "Raawwii Ida'ama": r_tot
+                    "Raawwii Ida'ama": r_tot,
+                    "Raawwii Dhiira %": f"{p_d}%",
+                    "Raawwii Dhalaa %": f"{p_dh}%",
+                    "Raawwii Ida'ama %": f"{p_tot}%"
                 })
             
             rows_1_6_kd = sum(r["Karoora Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
-            rows_1_6_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
             rows_1_6_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
+            rows_1_6_ktot = rows_1_6_kd + rows_1_6_kdh
+            rows_1_6_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
             rows_1_6_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) <= 6)
-            
+            rows_1_6_rtot = rows_1_6_rd + rows_1_6_rdh
+            p_1_6_d = round((rows_1_6_rd / rows_1_6_kd * 100), 1) if rows_1_6_kd > 0 else 0.0
+            p_1_6_dh = round((rows_1_6_rdh / rows_1_6_kdh * 100), 1) if rows_1_6_kdh > 0 else 0.0
+            p_1_6_tot = round((rows_1_6_rtot / rows_1_6_ktot * 100), 1) if rows_1_6_ktot > 0 else 0.0
+
             rows_7_8_kd = sum(r["Karoora Dhiira"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
-            rows_7_8_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
             rows_7_8_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+            rows_7_8_ktot = rows_7_8_kd + rows_7_8_kdh
+            rows_7_8_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
             rows_7_8_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if 7 <= int(r["Kutaa_Num"]) <= 8)
+            rows_7_8_rtot = rows_7_8_rd + rows_7_8_rdh
+            p_7_8_d = round((rows_7_8_rd / rows_7_8_kd * 100), 1) if rows_7_8_kd > 0 else 0.0
+            p_7_8_dh = round((rows_7_8_rdh / rows_7_8_kdh * 100), 1) if rows_7_8_kdh > 0 else 0.0
+            p_7_8_tot = round((rows_7_8_rtot / rows_7_8_ktot * 100), 1) if rows_7_8_ktot > 0 else 0.0
 
             rows_9_12_kd = sum(r["Karoora Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
-            rows_9_12_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
             rows_9_12_kdh = sum(r["Karoora Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+            rows_9_12_ktot = rows_9_12_kd + rows_9_12_kdh
+            rows_9_12_rd = sum(r["Raawwii Dhiira"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
             rows_9_12_rdh = sum(r["Raawwii Dhalaa"] for r in perf_raw if int(r["Kutaa_Num"]) >= 9)
+            rows_9_12_rtot = rows_9_12_rd + rows_9_12_rdh
+            p_9_12_d = round((rows_9_12_rd / rows_9_12_kd * 100), 1) if rows_9_12_kd > 0 else 0.0
+            p_9_12_dh = round((rows_9_12_rdh / rows_9_12_kdh * 100), 1) if rows_9_12_kdh > 0 else 0.0
+            p_9_12_tot = round((rows_9_12_rtot / rows_9_12_ktot * 100), 1) if rows_9_12_ktot > 0 else 0.0
 
             final_perf = []
             for r in perf_raw:
@@ -608,9 +678,9 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     final_perf.append(r)
             final_perf.append({
                 "Kutaa_Num": "6", "Kutaa": "Ida'ama Kutaa 1 - 6",
-                "Karoora Dhiira": rows_1_6_kd, "Raawwii Dhiira": rows_1_6_rd,
-                "Karoora Dhalaa": rows_1_6_kdh, "Raawwii Dhalaa": rows_1_6_rdh,
-                "Karoora Ida'ama": rows_1_6_kd + rows_1_6_kdh, "Raawwii Ida'ama": rows_1_6_rd + rows_1_6_rdh
+                "Karoora Dhiira": rows_1_6_kd, "Karoora Dhalaa": rows_1_6_kdh, "Karoora Ida'ama": rows_1_6_ktot,
+                "Raawwii Dhiira": rows_1_6_rd, "Raawwii Dhalaa": rows_1_6_rdh, "Raawwii Ida'ama": rows_1_6_rtot,
+                "Raawwii Dhiira %": f"{p_1_6_d}%", "Raawwii Dhalaa %": f"{p_1_6_dh}%", "Raawwii Ida'ama %": f"{p_1_6_tot}%"
             })
 
             for r in perf_raw:
@@ -618,17 +688,26 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     final_perf.append(r)
             final_perf.append({
                 "Kutaa_Num": "8", "Kutaa": "Ida'ama Kutaa 7 - 8",
-                "Karoora Dhiira": rows_7_8_kd, "Raawwii Dhiira": rows_7_8_rd,
-                "Karoora Dhalaa": rows_7_8_kdh, "Raawwii Dhalaa": rows_7_8_rdh,
-                "Karoora Ida'ama": rows_7_8_kd + rows_7_8_kdh, "Raawwii Ida'ama": rows_7_8_rd + rows_7_8_rdh
+                "Karoora Dhiira": rows_7_8_kd, "Karoora Dhalaa": rows_7_8_kdh, "Karoora Ida'ama": rows_7_8_ktot,
+                "Raawwii Dhiira": rows_7_8_rd, "Raawwii Dhalaa": rows_7_8_rdh, "Raawwii Ida'ama": rows_7_8_rtot,
+                "Raawwii Dhiira %": f"{p_7_8_d}%", "Raawwii Dhalaa %": f"{p_7_8_dh}%", "Raawwii Ida'ama %": f"{p_7_8_tot}%"
             })
+
+            tot_1_8_kd = rows_1_6_kd + rows_7_8_kd
+            tot_1_8_kdh = rows_1_6_kdh + rows_7_8_kdh
+            tot_1_8_ktot = tot_1_8_kd + tot_1_8_kdh
+            tot_1_8_rd = rows_1_6_rd + rows_7_8_rd
+            tot_1_8_rdh = rows_1_6_rdh + rows_7_8_rdh
+            tot_1_8_rtot = tot_1_8_rd + tot_1_8_rdh
+            p_1_8_d = round((tot_1_8_rd / tot_1_8_kd * 100), 1) if tot_1_8_kd > 0 else 0.0
+            p_1_8_dh = round((tot_1_8_rdh / tot_1_8_kdh * 100), 1) if tot_1_8_kdh > 0 else 0.0
+            p_1_8_tot = round((tot_1_8_rtot / tot_1_8_ktot * 100), 1) if tot_1_8_ktot > 0 else 0.0
 
             final_perf.append({
                 "Kutaa_Num": "8_tot", "Kutaa": "Ida'ama Waliigalaa (1 - 8)",
-                "Karoora Dhiira": rows_1_6_kd + rows_7_8_kd, "Raawwii Dhiira": rows_1_6_rd + rows_7_8_rd,
-                "Karoora Dhalaa": rows_1_6_kdh + rows_7_8_kdh, "Raawwii Dhalaa": rows_1_6_rdh + rows_7_8_rdh,
-                "Karoora Ida'ama": (rows_1_6_kd + rows_7_8_kd) + (rows_1_6_kdh + rows_7_8_kdh),
-                "Raawwii Ida'ama": (rows_1_6_rd + rows_7_8_rd) + (rows_1_6_rdh + rows_7_8_rdh)
+                "Karoora Dhiira": tot_1_8_kd, "Karoora Dhalaa": tot_1_8_kdh, "Karoora Ida'ama": tot_1_8_ktot,
+                "Raawwii Dhiira": tot_1_8_rd, "Raawwii Dhalaa": tot_1_8_rdh, "Raawwii Ida'ama": tot_1_8_rtot,
+                "Raawwii Dhiira %": f"{p_1_8_d}%", "Raawwii Dhalaa %": f"{p_1_8_dh}%", "Raawwii Ida'ama %": f"{p_1_8_tot}%"
             })
 
             for r in perf_raw:
@@ -636,20 +715,26 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     final_perf.append(r)
             final_perf.append({
                 "Kutaa_Num": "12", "Kutaa": "Ida'ama Kutaa 9 - 12",
-                "Karoora Dhiira": rows_9_12_kd, "Raawwii Dhiira": rows_9_12_rd,
-                "Karoora Dhalaa": rows_9_12_kdh, "Raawwii Dhalaa": rows_9_12_rdh,
-                "Karoora Ida'ama": rows_9_12_kd + rows_9_12_kdh, "Raawwii Ida'ama": rows_9_12_rd + rows_9_12_rdh
+                "Karoora Dhiira": rows_9_12_kd, "Karoora Dhalaa": rows_9_12_kdh, "Karoora Ida'ama": rows_9_12_ktot,
+                "Raawwii Dhiira": rows_9_12_rd, "Raawwii Dhalaa": rows_9_12_rdh, "Raawwii Ida'ama": rows_9_12_rtot,
+                "Raawwii Dhiira %": f"{p_9_12_d}%", "Raawwii Dhalaa %": f"{p_9_12_dh}%", "Raawwii Ida'ama %": f"{p_9_12_tot}%"
             })
 
-            tot_kd = rows_1_6_kd + rows_7_8_kd + rows_9_12_kd
-            tot_rd = rows_1_6_rd + rows_7_8_rd + rows_9_12_rd
-            tot_kdh = rows_1_6_kdh + rows_7_8_kdh + rows_9_12_kdh
-            tot_rdh = rows_1_6_rdh + rows_7_8_rdh + rows_9_12_rdh
+            tot_kd = tot_1_8_kd + rows_9_12_kd
+            tot_kdh = tot_1_8_kdh + rows_9_12_kdh
+            tot_ktot = tot_kd + tot_kdh
+            tot_rd = tot_1_8_rd + rows_9_12_rd
+            tot_rdh = tot_1_8_rdh + rows_9_12_rdh
+            tot_rtot = tot_rd + tot_rdh
+            p_tot_d = round((tot_rd / tot_kd * 100), 1) if tot_kd > 0 else 0.0
+            p_tot_dh = round((tot_rdh / tot_kdh * 100), 1) if tot_kdh > 0 else 0.0
+            p_tot_all = round((tot_rtot / tot_ktot * 100), 1) if tot_ktot > 0 else 0.0
+
             final_perf.append({
                 "Kutaa_Num": "12_tot", "Kutaa": "Waliigalaa (1 - 12)",
-                "Karoora Dhiira": tot_kd, "Raawwii Dhiira": tot_rd,
-                "Karoora Dhalaa": tot_kdh, "Raawwii Dhalaa": tot_rdh,
-                "Karoora Ida'ama": tot_kd + tot_kdh, "Raawwii Ida'ama": tot_rd + tot_rdh
+                "Karoora Dhiira": tot_kd, "Karoora Dhalaa": tot_kdh, "Karoora Ida'ama": tot_ktot,
+                "Raawwii Dhiira": tot_rd, "Raawwii Dhalaa": tot_rdh, "Raawwii Ida'ama": tot_rtot,
+                "Raawwii Dhiira %": f"{p_tot_d}%", "Raawwii Dhalaa %": f"{p_tot_dh}%", "Raawwii Ida'ama %": f"{p_tot_all}%"
             })
 
             perf_df = pd.DataFrame(final_perf)
