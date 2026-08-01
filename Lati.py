@@ -209,10 +209,25 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
           "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
       )
       
-      # Gosa miidhamaa akka listii (selectbox) ta'uu hafee akka filannoo tokkotti (text input) ykn akka hin tarreeffamneetti sirreeffameera
+      # Asitti "Jira" yeroo filatamu listii gaafatame sirriitti akka mul'atu godhameera
       gosa_miidhamaa = "Hin qabu"
       if miidhama_qaamaa == "Jira":
-          gosa_miidhamaa = st.text_input("Gosa Miidhama Qaamaa / Haala Addaa (Ibsi)")
+          gosa_miidhamaa = st.selectbox(
+              "Gosa Miidhama Qaamaa Filadhu",
+              [
+                  "Arguu salphaa",
+                  "Arguu cimaa",
+                  "Dhageettii salphaa",
+                  "Dhageettii cimaa",
+                  "Dubbii salphaa",
+                  "Dubbii cimaa",
+                  "Sochii salphaa",
+                  "Sochii cimaa",
+                  "Saaleessa sammuu",
+                  "Currisa hawaasumaa",
+                  "Haadhaa fi abbaa dhabuu"
+              ]
+          )
 
     with col2:
       st.markdown("**8. Bakka Dhalootaa**")
