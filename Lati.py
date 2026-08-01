@@ -99,7 +99,6 @@ def get_grade_rows(df, grade_list):
     return d_count, dh_count, d_count + dh_count
 
 def generate_grouped_report(data_rows, title_col_name="Kutaa"):
-    # Groupings: 1-6, 7-8, 1-8, 9-12, and Total (1-12)
     rows_1_6_d = sum(r["Dhiira"] for r in data_rows if int(r["Kutaa_Num"]) <= 6)
     rows_1_6_dh = sum(r["Dhalaa"] for r in data_rows if int(r["Kutaa_Num"]) <= 6)
     
@@ -111,28 +110,23 @@ def generate_grouped_report(data_rows, title_col_name="Kutaa"):
 
     final_table = []
     
-    # 1 to 6
     for r in data_rows:
         if int(r["Kutaa_Num"]) <= 6:
             final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
     final_table.append({title_col_name: "Ida'ama Kutaa 1 - 6", "Dhiira": rows_1_6_d, "Dhalaa": rows_1_6_dh, "Ida'ama": rows_1_6_d + rows_1_6_dh})
     
-    # 7 to 8
     for r in data_rows:
         if 7 <= int(r["Kutaa_Num"]) <= 8:
             final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
     final_table.append({title_col_name: "Ida'ama Kutaa 7 - 8", "Dhiira": rows_7_8_d, "Dhalaa": rows_7_8_dh, "Ida'ama": rows_7_8_d + rows_7_8_dh})
     
-    # Ida'ama 1 - 8
     final_table.append({title_col_name: "Ida'ama Waliigalaa (1 - 8)", "Dhiira": rows_1_6_d + rows_7_8_d, "Dhalaa": rows_1_6_dh + rows_7_8_dh, "Ida'ama": (rows_1_6_d + rows_7_8_d) + (rows_1_6_dh + rows_7_8_dh)})
 
-    # 9 to 12
     for r in data_rows:
         if int(r["Kutaa_Num"]) >= 9:
             final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
     final_table.append({title_col_name: "Ida'ama Kutaa 9 - 12", "Dhiira": rows_9_12_d, "Dhalaa": rows_9_12_dh, "Ida'ama": rows_9_12_d + rows_9_12_dh})
 
-    # Ida'ama Waliigalaa (1 - 12)
     tot_d = rows_1_6_d + rows_7_8_d + rows_9_12_d
     tot_dh = rows_1_6_dh + rows_7_8_dh + rows_9_12_dh
     final_table.append({title_col_name: "Waliigalaa (1 - 12)", "Dhiira": tot_d, "Dhalaa": tot_dh, "Ida'ama": tot_d + tot_dh})
@@ -280,11 +274,9 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             if not maqaa_guutuu:
                 st.error("Maaloo Maqaa Guutuu barataa guuti!")
             else:
-                # Duplicate Check Rule (Rule 3)
                 existing_df = st.session_state.students_db
                 duplicate_found = False
                 if not existing_df.empty:
-                    # Check by exact name match and grade
                     match_name = existing_df["Maqaa Guutuu"].str.strip().str.lower() == maqaa_guutuu.strip().lower()
                     match_grade = existing_df["Kutaa"] == kutaa
                     if fan_id.strip():
@@ -326,7 +318,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
                     )
                     st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
 
-# ----------------- 3. DASHBOARD BARSIIKAA / GABAASAA (PASSWORD PROTECTED) -----------------
+# ----------------- 3. DASHBOARD BARSIISAA / GABAASAA (PASSWORD PROTECTED) -----------------
 elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
     st.subheader("🔐 Dashboard Barsiisaa (Seensa Eeyyamame)")
 
@@ -337,22 +329,12 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
         tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs(
             [
-                "A. Karoora",
-                "B. Guutuu (Excel)",
-                "C. Guyyaa (Guyyaa Tokkoo)",
-                "D. Waligalaa (Hanaga Ammaatti)",
-                "E. Miidhamaa (Maqaa)",
-                "F. Miidhamaa (Count)",
-                "G. Irra-Deebii (Maqaa)",
-                "H. Irra-Deebii (Count)",
-                "I. Gabaasa Waligalaa 2019",
-                "J. Edit/Delete Data",
+                "Karoora", "Guutuu", "Guyyaa", "Hanga Ammaa", "Miidhamaa", 
+                "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii", "Karoora vs Raawwii", "Edit/Delete"
             ]
         )
-tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs([
-            "Karoora", "Guutuu", "Guyyaa", "Hanga Ammaa", "Miidhamaa", 
-            "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii", "Karoora vs Raawwii", "Edit/Delete"
-        ])
+
+        db = st.session_state.students_db
 
         with tabA:
             st.markdown("### A. Guca Karoora Galmee Barataa (Dhiira, Dhalaa, Ida'ama)")
@@ -501,6 +483,8 @@ tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs([
                     )
                 else:
                     st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
 
         with tabF:
             st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa (Tartiiba Kutaatiin)")
@@ -548,6 +532,8 @@ tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs([
                     )
                 else:
                     st.info("Barataan irra deebii galmaa'e hin jiru.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
 
         with tabH:
             st.markdown("### H. Gabaasa Lakkoofsaa Irra Deebii (Tartiiba Kutaatiin)")
@@ -688,23 +674,51 @@ tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs([
                 filtered_edit = db[db["Maqaa Guutuu"].str.contains(search_query, case=False, na=False) | db["FAN ID"].str.contains(search_query, case=False, na=False)] if search_query else db
                 
                 if not filtered_edit.empty:
-                    selected_idx = st.selectbox("Barataa jijjiiruf filadhu (Index)", filtered_edit.index.tolist())
-                    row_data = db.loc[selected_idx]
+                    selected_student_idx = st.selectbox(
+                        "Barataa sirreessuu/haquu barbaaddhu filadhu:",
+                        filtered_edit.index.tolist(),
+                        format_func=lambda x: f"{db.loc[x, 'Maqaa Guutuu']} (Kutaa {db.loc[x, 'Kutaa']}, FAN ID: {db.loc[x, 'FAN ID']})"
+                    )
                     
-                    with st.form("edit_form"):
-                        new_maqaa = st.text_input("Maqaa Guutuu", value=row_data["Maqaa Guutuu"])
-                        col_save_edit, col_del_edit = st.columns(2)
-                        do_update = col_save_edit.form_submit_button("🔄 Update / Save")
-                        do_delete = col_del_edit.form_submit_button("🗑️ Delete Barataa")
+                    if selected_student_idx is not None:
+                        current_data = db.loc[selected_student_idx]
+                        
+                        col_e1, col_e2 = st.columns(2)
+                        with col_e1:
+                            new_maqaa = st.text_input("Maqaa Guutuu Haaraa", value=current_data["Maqaa Guutuu"], key="edit_maqaa")
+                            new_koorniyaa = st.selectbox("Koorniyaa Haaraa", ["Dhiira", "Dhalaa"], index=0 if current_data["Koorniyaa"] == "Dhiira" else 1, key="edit_koorniyaa")
+                            new_kutaa = st.selectbox("Kutaa Haaraa", [str(i) for i in range(1, 13)], index=int(current_data["Kutaa"])-1, key="edit_kutaa")
+                            new_daree = st.text_input("Daree (Section)", value=current_data["Daree (Section)"], key="edit_daree")
+                            new_haala = st.selectbox("Haala Galmee", ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"], index=0, key="edit_haala")
+                        with col_e2:
+                            new_fan = st.text_input("FAN ID", value=current_data["FAN ID"], key="edit_fan")
+                            new_bilbila_barataa = st.text_input("Lakk Bilbila Barataa", value=current_data["Lakk Bilbila Barataa"], key="edit_bil_bar")
+                            new_bilbila_maatii = st.text_input("Lakk Bilbila Maatii", value=current_data["Lakk Bilbila Maatii"], key="edit_bil_mat")
+                            new_avireejjii = st.number_input("Avireejjii Qabxii", min_value=0.0, max_value=100.0, value=float(current_data["Avireejjii Qabxii"]), key="edit_av")
 
-                        if do_update:
-                            st.session_state.students_db.at[selected_idx, "Maqaa Guutuu"] = new_maqaa
-                            st.success("Odeeffannoon barataa milkaa'inaan *Update* ta'eera!")
-                            st.rerun()
-
-                        if do_delete:
-                            st.session_state.students_db = db.drop(selected_idx).reset_index(drop=True)
-                            st.success("Barataan kun haqameera!")
-                            st.rerun()
-    elif password != "":
-        st.error("Password sirrii miti! Irra deebi'ii yaali.")
+                        col_btn1, col_btn2 = st.columns(2)
+                        with col_btn1:
+                            if st.button("🔄 Deetaa Fooyyessi (Update)"):
+                                st.session_state.students_db.loc[selected_student_idx, "Maqaa Guutuu"] = new_maqaa
+                                st.session_state.students_db.loc[selected_student_idx, "Koorniyaa"] = new_koorniyaa
+                                st.session_state.students_db.loc[selected_student_idx, "Kutaa"] = new_kutaa
+                                st.session_state.students_db.loc[selected_student_idx, "Daree (Section)"] = new_daree
+                                st.session_state.students_db.loc[selected_student_idx, "Haala Galmee"] = new_haala
+                                st.session_state.students_db.loc[selected_student_idx, "FAN ID"] = new_fan
+                                st.session_state.students_db.loc[selected_student_idx, "Lakk Bilbila Barataa"] = new_bilbila_barataa
+                                st.session_state.students_db.loc[selected_student_idx, "Lakk Bilbila Maatii"] = new_bilbila_maatii
+                                st.session_state.students_db.loc[selected_student_idx, "Avireejjii Qabxii"] = new_avireejjii
+                                st.success("Deetaan barataa milkaa'inaan fooyya'eera!")
+                                st.rerun()
+                        with col_btn2:
+                            if st.button("🗑️ Barataa Haqi (Delete)", type="primary"):
+                                st.session_state.students_db = st.session_state.students_db.drop(selected_student_idx).reset_index(drop=True)
+                                st.success("Barataan kun galmeerraa haqameera!")
+                                st.rerun()
+                else:
+                    st.info("Barataan barbaadame hin argamne.")
+            else:
+                st.info("Galmeen barattootaa duwwaadha.")
+    else:
+        if password:
+            st.error("Pasmaardii sirrii miti! Maaloo irra deebii yaali.")
