@@ -351,8 +351,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         )
 
         db = st.session_state.students_db
-
-        with tabA:
+with tabA:
             st.markdown("### A. Guca Karoora Galmee Barataa (Dhiira, Dhalaa, Ida'ama)")
             with st.form("target_form"):
                 selected_grade = st.selectbox(
@@ -390,7 +389,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             target_df = generate_grouped_report(raw_targets, title_col_name="Kutaa")
             st.dataframe(target_df, use_container_width=True)
 
-            # Download/Print Target Excel
             buffer_t = io.BytesIO()
             with pd.ExcelWriter(buffer_t, engine="openpyxl") as writer:
                 target_df.to_excel(writer, sheet_name="Karoora_Galmee", index=False)
@@ -417,7 +415,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             else:
                 st.info("Deetaan galmaa'e hin jiru.")
 
-      with tabC:
+        with tabC:
             st.markdown("### C. Gabaasa Galmee Guyyaa Tokkoo")
             if not db.empty:
                 available_dates = db["Guyyaa Galmee (E.C)"].unique().tolist()
