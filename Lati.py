@@ -57,7 +57,7 @@ st.markdown(
 APPROVED_USERS = {
     "barsiisaa1@gmail.com": "keta1234",
     "barsiisaa2@gmail.com": "naga5678",
-    "kitesa@gmail.com": "admin2026",  # Kun kan keeti
+    "kitesanegasa2012@gmail.com": "39323713K",  # Kun kan keeti
 }
 
 # Session State Initialization for Database, Targets, and School Name
