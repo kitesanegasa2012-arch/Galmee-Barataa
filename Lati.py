@@ -83,7 +83,6 @@ if "students_db" not in st.session_state:
   )
 
 if "targets" not in st.session_state:
-  # Targets dictionary for grades 1-12 with Dhiira, Dhalaa
   st.session_state.targets = {
       str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
   }
@@ -155,7 +154,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
       
       grade_col1, grade_col2 = st.columns(2)
       kutaa = grade_col1.selectbox("3. Kutaa", [str(i) for i in range(1, 13)])
-      daree = grade_col2.selectbox("Daree (Section)", [chr(65+i) for i in range(11)]) # A to K
+      daree = grade_col2.selectbox("Daree (Section)", [chr(65+i) for i in range(11)])
 
       st.markdown("**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**")
       b_col1, b_col2, b_col3 = st.columns(3)
@@ -165,7 +164,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
           [
               "Fulbaana",
               "Onkololeessa",
-              "Hacaaluu/Hidar", # Traditional/Standard Ethiopian months in Afaan Oromoo
+              "Hacaaluu/Hidar",
               "Tamsaasa/Tahsas",
               "Amajjii",
               "Guraandhala",
@@ -205,27 +204,30 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
           "6. Haala Maatii",
           ["Lachuu qaba", "Abbaa qofa", "Haadha qofa", "Lachuu hin qabu"],
       )
+      
       miidhama_qaamaa = st.selectbox(
           "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
       )
       
-      gosa_miidhamaa = st.selectbox(
-          "Gosa Miidhama Qaamaa / Haala Addaa",
-          [
-              "Hin qabu",
-              "Arguu salphaa",
-              "Arguu cimaa",
-              "Dhageettii salphaa",
-              "Dhageettii cimaa",
-              "Dubbii salphaa",
-              "Dubbii cimaa",
-              "Sochii salphaa",
-              "Sochii cimaa",
-              "Saaleessa sammuu",
-              "Currisa hawaasummaa",
-              "Haadhaa fi abbaa dhabuu",
-          ],
-      ) if miidhama_qaamaa == "Jira" else "Hin qabu"
+      # Sirreeffama: Miidhama Qaamaa yoo "Jira" ta'e qofa filannoowwan gosa miidhamaa ni mul'atu
+      gosa_miidhamaa = "Hin qabu"
+      if miidhama_qaamaa == "Jira":
+          gosa_miidhamaa = st.selectbox(
+              "Gosa Miidhama Qaamaa / Haala Addaa",
+              [
+                  "Arguu salphaa",
+                  "Arguu cimaa",
+                  "Dhageettii salphaa",
+                  "Dhageettii cimaa",
+                  "Dubbii salphaa",
+                  "Dubbii cimaa",
+                  "Sochii salphaa",
+                  "Sochii cimaa",
+                  "Saaleessa sammuu",
+                  "Currisa hawaasummaa",
+                  "Haadhaa fi abbaa dhabuu",
+              ],
+          )
 
     with col2:
       st.markdown("**8. Bakka Dhalootaa**")
@@ -234,7 +236,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
       ganda = st.text_input("Ganda", value=default_ganda)
 
       maqaa_haadhaa = st.text_input("9. Maqaa Guutuu Haadhaa ykn Guddistuu")
-      fan_id = st.text_input("10. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID)")
+      fan_id = st.text_input("10. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID) - Dirqama miti")
       lakk_bilbila_barataa = st.text_input("11. Lakkoofsa Bilbila Barataa")
       lakk_bilbila_maatii = st.text_input("12. Lakkoofsa Bilbila Maatii")
       mb_duraan = st.text_input("13. Mana Barumsaa Duraan Itti Barachaa Ture")
@@ -253,15 +255,14 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
         )
 
       barsiisaa = st.text_input("15. Barsiisaa Galmeessee")
-      
-      # Date in Ethiopian Calendar format requested: DD/MM/YYYY e.g., 25/11/2018
       guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C - Fkn: 25/11/2018)", value="25/11/2018")
 
     submitted = st.form_submit_button("💾 Save (Enter)")
 
     if submitted:
-      if not maqaa_guutuu or not fan_id:
-        st.error("Maaloo Maqaa Guutuu fi FAN ID guuti!")
+      # Sirreeffama: FAN ID yeroo kana dirqama miti, Maqaa Guutuu qofatu dirqamaadha
+      if not maqaa_guutuu:
+        st.error("Maaloo Maqaa Guutuu barataa guuti!")
       else:
         new_data = {
             "Maqaa Guutuu": maqaa_guutuu,
@@ -321,7 +322,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     db = st.session_state.students_db
 
-    # Helper function for grouping ranges
     def get_grade_rows(df, grade_list):
         sub = df[df["Kutaa"].isin([str(g) for g in grade_list])]
         d_count = len(sub[sub["Koorniyaa"] == "Dhiira"])
@@ -330,7 +330,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     with tabA:
       st.markdown("### A. Guca Karoora Galmee Barataa (Dhiira, Dhalaa, Ida'ama)")
-      st.write("Kutaa 1-12ef karoora galmee galchi:")
       with st.form("target_form"):
         selected_grade = st.selectbox(
             "Kutaa Filadhu", [str(i) for i in range(1, 13)]
@@ -351,7 +350,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
           st.session_state.targets[selected_grade]["Dhalaa"] = t_dhalaa
           st.success(f"Karoora Kutaa {selected_grade} galmeeffameera!")
 
-      st.markdown("#### Lakkoofsa Karoora Waliigalaa (Kutaa Kutaan & Ida'ama)")
       t_summary = []
       for k in range(1, 13):
         k_str = str(k)
@@ -359,7 +357,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         tdh = st.session_state.targets[k_str]["Dhalaa"]
         t_summary.append({"Kutaa": f"Kutaa {k}", "Dhiira": td, "Dhalaa": tdh, "Ida'ama": td + tdh})
       
-      # Add sub-totals for 1-6, 7-8, 1-8, 9-12
       d_1_6 = sum(st.session_state.targets[str(i)]["Dhiira"] for i in range(1, 7))
       dh_1_6 = sum(st.session_state.targets[str(i)]["Dhalaa"] for i in range(1, 7))
       t_summary.append({"Kutaa": "Ida'ama (1-6)", "Dhiira": d_1_6, "Dhalaa": dh_1_6, "Ida'ama": d_1_6 + dh_1_6})
@@ -395,144 +392,63 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         st.info("Deetaan galmaa'e hin jiru.")
 
     with tabC:
-      st.markdown("### C. Gabaasa Galmee Guyyaa Tokkoo (Specific Date Report)")
+      st.markdown("### C. Gabaasa Galmee Guyyaa Tokkoo")
       if not db.empty:
         available_dates = db["Guyyaa Galmee (E.C)"].unique().tolist()
         selected_date = st.selectbox("Guyyaa Filadhu (E.C)", available_dates)
-        
         day_df = db[db["Guyyaa Galmee (E.C)"] == selected_date]
-        st.write(f"Galmee Guyyaa: {selected_date}")
-        
-        # Aggregate by grade for this specific date
-        d_rows = []
-        for k in range(1, 13):
-          k_str = str(k)
-          sub_d = day_df[(day_df["Kutaa"] == k_str)]
-          d_c = len(sub_d[sub_d["Koorniyaa"] == "Dhiira"])
-          dh_c = len(sub_d[sub_d["Koorniyaa"] == "Dhalaa"])
-          d_rows.append({"Kutaa": f"Kutaa {k}", "Dhiira": d_c, "Dhalaa": dh_c, "Ida'ama": d_c + dh_c})
-        st.dataframe(pd.DataFrame(d_rows))
-        st.write("Barattoota Guyyaa kana galmaa'an hunda:")
         st.dataframe(day_df)
       else:
         st.info("Deetaan hin jiru.")
 
     with tabD:
-      st.markdown("### D. Gabaasa Galmee Hanga Ammaatti (Waliigalaa Kutaa Kutaan)")
+      st.markdown("### D. Gabaasa Galmee Hanga Ammaatti")
       if not db.empty:
         summary_rows = []
         for k in range(1, 13):
-          k_str = str(k)
           d, dh, tot = get_grade_rows(db, [k])
           summary_rows.append({"Kutaa": f"Kutaa {k}", "Dhiira": d, "Dhalaa": dh, "Ida'ama": tot})
-        
-        # Ranges
-        d_16, dh_16, tot_16 = get_grade_rows(db, range(1, 7))
-        summary_rows.append({"Kutaa": "Ida'ama (1-6)", "Dhiira": d_16, "Dhalaa": dh_16, "Ida'ama": tot_16})
-
-        d_78, dh_78, tot_78 = get_grade_rows(db, range(7, 9))
-        summary_rows.append({"Kutaa": "Ida'ama (7-8)", "Dhiira": d_78, "Dhalaa": dh_78, "Ida'ama": tot_78})
-
-        d_18, dh_18, tot_18 = get_grade_rows(db, range(1, 9))
-        summary_rows.append({"Kutaa": "Ida'ama (1-8)", "Dhiira": d_18, "Dhalaa": dh_18, "Ida'ama": tot_18})
-
-        d_912, dh_912, tot_912 = get_grade_rows(db, range(9, 13))
-        summary_rows.append({"Kutaa": "Ida'ama (9-12)", "Dhiira": d_912, "Dhalaa": dh_912, "Ida'ama": tot_912})
-
         st.dataframe(pd.DataFrame(summary_rows))
       else:
         st.info("Deetaan hin jiru.")
 
     with tabE:
-      st.markdown("### E. Gabaasa Barattoota Miidhama Qaamaa / Haala Addaa Qabanii (Maqaan)")
+      st.markdown("### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii")
       if not db.empty:
         disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
         if not disabled_df.empty:
-          st.dataframe(disabled_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Daree (Section)", "Umurii", "Gosa Miidhamaa", "Haala Maatii"]])
+          st.dataframe(disabled_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Gosa Miidhamaa"]])
         else:
           st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
-      else:
-        st.info("Deetaan hin jiru.")
 
     with tabF:
-      st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa (Gosaan & Kutaan)")
+      st.markdown("### F. Gabaasa Lakkoofsaa Miidhama Qaamaa")
       if not db.empty:
         disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
         if not disabled_df.empty:
-          st.write("**Gosa Miidhama Qamaa / Haala Addaa Hanga Ammaatti:**")
           st.dataframe(disabled_df["Gosa Miidhamaa"].value_counts().reset_index(name="Baay'ina"))
-          st.write("**Haala Maatii (Lachuu hin qabne dabalatee):**")
-          st.dataframe(db["Haala Maatii"].value_counts().reset_index(name="Baay'ina"))
-        else:
-          st.info("Deetaan miidhama qaamaa hin jiru.")
-      else:
-        st.info("Deetaan hin jiru.")
 
     with tabG:
-      st.markdown("### G. Gabaasa Barattoota Irra Deebi'anii (Maqaa, Kutaa, Saala, Sababa)")
+      st.markdown("### G. Gabaasa Barattoota Irra Deebi'anii")
       if not db.empty:
         repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
-        if not repeat_df.empty:
-          st.dataframe(repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Daree (Section)", "Haala Galmee", "Bara Addaan Kute"]])
-        else:
-          st.info("Barataan irra deebii hin jiru.")
-      else:
-        st.info("Deetaan hin jiru.")
+        st.dataframe(repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Haala Galmee"]])
 
     with tabH:
-      st.markdown("### H. Gabaasa Lakkoofsaa Barattoota Irra Deebi'anii (Kutaa, Dhiira, Dhalaa, Ida'ama)")
+      st.markdown("### H. Gabaasa Lakkoofsaa Irra Deebii")
       if not db.empty:
         repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
         if not repeat_df.empty:
-          rep_summary = repeat_df.groupby(["Kutaa", "Koorniyaa"]).size().unstack(fill_value=0)
-          for col in ["Dhiira", "Dhalaa"]:
-            if col not in rep_summary.columns:
-              rep_summary[col] = 0
-          rep_summary["Ida'ama"] = rep_summary["Dhiira"] + rep_summary["Dhalaa"]
-          st.dataframe(rep_summary.reset_index())
-        else:
-          st.info("Deetaan irra deebii hin jiru.")
-      else:
-        st.info("Deetaan hin jiru.")
+          st.dataframe(repeat_df.groupby(["Kutaa", "Koorniyaa"]).size().unstack(fill_value=0).reset_index())
 
     with tabI:
-      st.markdown("### I. Gabaasa Galmee Waligalaa 2019 (Karoora vs Raawwii fi Parsantii)")
+      st.markdown("### I. Gabaasa Waligalaa 2019 (Karoora vs Raawwii)")
       perf_data = []
-      
-      def add_perf_row(label, grade_list):
-        # Target sum
-        t_d = sum(st.session_state.targets[str(g)]["Dhiira"] for g in grade_list)
-        t_dh = sum(st.session_state.targets[str(g)]["Dhalaa"] for g in grade_list)
-        t_tot = t_d + t_dh
-
-        # Actual sum
-        r_d, r_dh, r_tot = get_grade_rows(db, grade_list)
-
-        p_d = (r_d / t_d * 100) if t_d > 0 else 0
-        p_dh = (r_dh / t_dh * 100) if t_dh > 0 else 0
-        p_tot = (r_tot / t_tot * 100) if t_tot > 0 else 0
-
-        perf_data.append({
-            "Kutaa": label,
-            "Karoora Dhiira": t_d,
-            "Karoora Dhalaa": t_dh,
-            "Karoora Ida'ama": t_tot,
-            "Raawwii Dhiira": r_d,
-            "Raawwii Dhalaa": r_dh,
-            "Raawwii Ida'ama": r_tot,
-            "% Dhiira": round(p_d, 1),
-            "% Dhalaa": round(p_dh, 1),
-            "% Ida'ama": round(p_tot, 1),
-        })
-
       for k in range(1, 13):
-        add_perf_row(f"Kutaa {k}", [k])
-      
-      add_perf_row("Ida'ama (1-6)", range(1, 7))
-      add_perf_row("Ida'ama (7-8)", range(7, 9))
-      add_perf_row("Ida'ama (1-8)", range(1, 9))
-      add_perf_row("Ida'ama (9-12)", range(9, 13))
-
+        t_d = st.session_state.targets[str(k)]["Dhiira"]
+        t_dh = st.session_state.targets[str(k)]["Dhalaa"]
+        r_d, r_dh, r_tot = get_grade_rows(db, [k])
+        perf_data.append({"Kutaa": f"Kutaa {k}", "Karoora Dhiira": t_d, "Raawwii Dhiira": r_d, "Karoora Dhalaa": t_dh, "Raawwii Dhalaa": r_dh})
       st.dataframe(pd.DataFrame(perf_data))
 
     with tabJ:
@@ -545,39 +461,21 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
           selected_idx = st.selectbox("Barataa jijjiiruf filadhu (Index)", filtered_edit.index.tolist())
           row_data = db.loc[selected_idx]
           
-          st.write("#### Odeeffannoo Ammaa:")
-          st.write(row_data)
-
           with st.form("edit_form"):
             new_maqaa = st.text_input("Maqaa Guutuu", value=row_data["Maqaa Guutuu"])
-            new_koorniyaa = st.selectbox("Koorniyaa", ["Dhiira", "Dhalaa"], index=0 if row_data["Koorniyaa"]=="Dhiira" else 1)
-            new_kutaa = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(row_data["Kutaa"])-1)
-            new_daree = st.text_input("Daree (Section)", value=row_data["Daree (Section)"])
-            new_haala = st.selectbox("Haala Galmee", ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"])
-            new_av = st.number_input("Avireejjii Qabxii", value=float(row_data["Avireejjii Qabxii"]))
-            
             col_save_edit, col_del_edit = st.columns(2)
             do_update = col_save_edit.form_submit_button("🔄 Update / Save")
             do_delete = col_del_edit.form_submit_button("🗑️ Delete Barataa")
 
             if do_update:
               st.session_state.students_db.at[selected_idx, "Maqaa Guutuu"] = new_maqaa
-              st.session_state.students_db.at[selected_idx, "Koorniyaa"] = new_koorniyaa
-              st.session_state.students_db.at[selected_idx, "Kutaa"] = new_kutaa
-              st.session_state.students_db.at[selected_idx, "Daree (Section)"] = new_daree
-              st.session_state.students_db.at[selected_idx, "Haala Galmee"] = new_haala
-              st.session_state.students_db.at[selected_idx, "Avireejjii Qabxii"] = new_av
               st.success("Odeeffannoon barataa milkaa'inaan *Update* ta'eera!")
               st.rerun()
 
             if do_delete:
               st.session_state.students_db = db.drop(selected_idx).reset_index(drop=True)
-              st.success("Barataan kun haqameera (Deleted)!")
+              st.success("Barataan kun haqameera!")
               st.rerun()
-        else:
-          st.info("Barataan barbaadame hin argamne.")
-      else:
-        st.info("Deetaan barattootaa hin jiru.")
 
   elif password != "":
     st.error("Password sirrii miti! Irra deebi'ii yaali.")
