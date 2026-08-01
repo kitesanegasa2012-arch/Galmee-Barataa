@@ -209,25 +209,10 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
           "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
       )
       
-      # Sirreeffama: Miidhama Qaamaa yoo "Jira" ta'e qofa filannoowwan gosa miidhamaa ni mul'atu
+      # Gosa miidhamaa akka listii (selectbox) ta'uu hafee akka filannoo tokkotti (text input) ykn akka hin tarreeffamneetti sirreeffameera
       gosa_miidhamaa = "Hin qabu"
       if miidhama_qaamaa == "Jira":
-          gosa_miidhamaa = st.selectbox(
-              "Gosa Miidhama Qaamaa / Haala Addaa",
-              [
-                  "Arguu salphaa",
-                  "Arguu cimaa",
-                  "Dhageettii salphaa",
-                  "Dhageettii cimaa",
-                  "Dubbii salphaa",
-                  "Dubbii cimaa",
-                  "Sochii salphaa",
-                  "Sochii cimaa",
-                  "Saaleessa sammuu",
-                  "Currisa hawaasummaa",
-                  "Haadhaa fi abbaa dhabuu",
-              ],
-          )
+          gosa_miidhamaa = st.text_input("Gosa Miidhama Qaamaa / Haala Addaa (Ibsi)")
 
     with col2:
       st.markdown("**8. Bakka Dhalootaa**")
@@ -260,7 +245,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
     submitted = st.form_submit_button("💾 Save (Enter)")
 
     if submitted:
-      # Sirreeffama: FAN ID yeroo kana dirqama miti, Maqaa Guutuu qofatu dirqamaadha
       if not maqaa_guutuu:
         st.error("Maaloo Maqaa Guutuu barataa guuti!")
       else:
@@ -356,23 +340,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         td = st.session_state.targets[k_str]["Dhiira"]
         tdh = st.session_state.targets[k_str]["Dhalaa"]
         t_summary.append({"Kutaa": f"Kutaa {k}", "Dhiira": td, "Dhalaa": tdh, "Ida'ama": td + tdh})
-      
-      d_1_6 = sum(st.session_state.targets[str(i)]["Dhiira"] for i in range(1, 7))
-      dh_1_6 = sum(st.session_state.targets[str(i)]["Dhalaa"] for i in range(1, 7))
-      t_summary.append({"Kutaa": "Ida'ama (1-6)", "Dhiira": d_1_6, "Dhalaa": dh_1_6, "Ida'ama": d_1_6 + dh_1_6})
-
-      d_7_8 = sum(st.session_state.targets[str(i)]["Dhiira"] for i in range(7, 9))
-      dh_7_8 = sum(st.session_state.targets[str(i)]["Dhalaa"] for i in range(7, 9))
-      t_summary.append({"Kutaa": "Ida'ama (7-8)", "Dhiira": d_7_8, "Dhalaa": dh_7_8, "Ida'ama": d_7_8 + dh_7_8})
-
-      d_1_8 = d_1_6 + d_7_8
-      dh_1_8 = dh_1_6 + dh_7_8
-      t_summary.append({"Kutaa": "Ida'ama (1-8)", "Dhiira": d_1_8, "Dhalaa": dh_1_8, "Ida'ama": d_1_8 + dh_1_8})
-
-      d_9_12 = sum(st.session_state.targets[str(i)]["Dhiira"] for i in range(9, 13))
-      dh_9_12 = sum(st.session_state.targets[str(i)]["Dhalaa"] for i in range(9, 13))
-      t_summary.append({"Kutaa": "Ida'ama (9-12)", "Dhiira": d_9_12, "Dhalaa": dh_9_12, "Ida'ama": d_9_12 + dh_9_12})
-
       st.dataframe(pd.DataFrame(t_summary))
 
     with tabB:
