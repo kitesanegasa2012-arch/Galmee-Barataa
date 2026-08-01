@@ -5,7 +5,7 @@ import streamlit as st
 
 # Page Configuration
 st.set_page_config(
-    page_title="App Galmee Barattootaa - B/saa Kitesa Negasa",
+    page_title=" LATI APP",
     page_icon="🎓",
     layout="wide",
 )
@@ -141,7 +141,7 @@ def generate_grouped_report(data_rows, title_col_name="Kutaa"):
 
 
 # ----------------- LOGIN SYSTEM (COVER PAGE 1 JALATTI) -----------------
-st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
+st.sidebar.markdown("### 🏫 Kitesa Negasa")
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -150,9 +150,9 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div class="cover-card">
-            <h1>🎓 APP GALMEE BARATTOOTAA</h1>
-            <h3>Baga Nagaan Gara App Galmee Barattootaa Mana Barumsaa B/saa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
-            <p>Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa oomishuuf fi hordoffii taasisuuf kan qophaa'eedha.</p>
+            <h1>🎓 LATI APP </h1>
+            <h3>Baga Nagaan Gara App Galmee Barattootaa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
+            <p>Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
         unsafe_allow_html=True,
