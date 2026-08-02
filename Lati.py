@@ -699,7 +699,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 })
 
             perf_df = pd.DataFrame(perf_raw)
-            st.dataframe(perf_df, use_container_width+True)
+           st.dataframe(perf_df, use_container_width=True)
 
             buffer_i = io.BytesIO()
             with pd.ExcelWriter(buffer_i, engine="openpyxl") as writer:
