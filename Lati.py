@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# Custom CSS for Styling
+# Custom CSS for Styling (Borders, Shapes, Colors, Font Sizes)
 st.markdown(
     """
     <style>
@@ -20,18 +20,60 @@ st.markdown(
     .cover-card {
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         padding: 40px;
-        border-radius: 15px;
+        border-radius: 20px;
         color: white;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        border: 3px solid #ffffff;
+        margin-bottom: 25px;
+    }
+    .cover-card h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: #ffffff;
+    }
+    .cover-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #e3e6f0;
+    }
+    .cover-card p {
+        font-size: 1.1rem;
+        color: #f8f9fa;
+    }
+    .contact-box {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%);
+        padding: 30px;
+        border-radius: 15px;
+        border-left: 8px solid #4e73df;
+        border-right: 2px solid #e3e6f0;
+        border-top: 2px solid #e3e6f0;
+        border-bottom: 2px solid #e3e6f0;
+        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.15);
+        margin-top: 20px;
+        text-align: center;
+    }
+    .contact-box h4 {
+        color: #2e384d;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    .contact-box p {
+        color: #5a5c69;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 8px 0;
     }
     .metric-card {
         background-color: #ffffff;
         border: 2px solid #e3e6f0;
         padding: 20px;
-        border-radius: 10px;
+        border-radius: 12px;
         text-align: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
     .stButton>button {
         background-color: #4e73df;
@@ -43,10 +85,6 @@ st.markdown(
     }
     .stButton>button:hover {
         background-color: #2e59d9;
-    }
-    h1, h2, h3 {
-        color: #2e384d;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     </style>
 """,
@@ -137,6 +175,13 @@ if not st.session_state.authenticated:
             <h3>Baga Nagaan Gara App Galmee Barattootaa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
             <p>Sirni kun odeeffannoo guutuu barattootaa galmeessuun, gabaasota addaa addaa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
+        
+        <div class="contact-box">
+            <h4>📞 Odaan Qunnamtii (Contact Information)</h4>
+            <p>Itti fayyadama app kanaaf eeyyama argachuuf toora qunnamtii kana fayyadamaa!</p>
+            <p>📱 <b>Telphone & Telegram:</b> +251969184005 / 910927936</p>
+            <p>📧 <b>Gmail:</b> kitesanegasa2012@gmail.com</p>
+        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -199,6 +244,13 @@ else:
                 <h1>🎓 APP GALMEE BARATTOOTAA</h1>
                 <h3>Baga Nagaan Gara App Galmee Barattootaa Mana Barumsaa B/saa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
                 <p>Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa oomishuuf fi hordoffii taasisuuf kan qophaa'eedha.</p>
+            </div>
+            
+            <div class="contact-box">
+                <h4>📞 Odaan Qunnamtii (Contact Information)</h4>
+                <p>Itti fayyadama app kanaaf eeyyama argachuuf toora qunnamtii kana fayyadamaa!</p>
+                <p>📱 <b>Telphone & Telegram:</b> +251969184005 / 910927936</p>
+                <p>📧 <b>Gmail:</b> kitesanegasa2012@gmail.com</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -432,14 +484,14 @@ else:
         password = st.text_input("Password Gabaasaa", type="password", key="dash_pass")
 
         if password == "kitesa2019" or password == "admin123":
-            st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa.")
+            st.success("Seensa Milkaa'e! Gabaasotaa, Karoora, fi Sirreeffama (Edit/Delete) ilaaluu dandeessa.")
 
             school_display = st.session_state.school_name if st.session_state.school_name else "Mana Barumsaa"
 
-            tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH = st.tabs(
+            tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabEdit = st.tabs(
                 [
                     "Karoora", "Guutuu", "Guyyaa", "Hanga Ammaa", "Miidhamaa",
-                    "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii"
+                    "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii", "✏️ Edit / Delete"
                 ]
             )
 
@@ -703,4 +755,39 @@ else:
                     else:
                         st.info("Barataan irra deebii galmaa'e hin jiru.")
                 else:
-                    st.info("Deetaan waligalaa hin jiru.")              
+                    st.info("Deetaan waligalaa hin jiru.")
+
+            with tabEdit:
+                st.markdown("### ✏️ Sirreeffama (Edit) ykn Haquu (Delete) Deetaa Barattootaa")
+                if not db.empty:
+                    student_names = db["Maqaa Guutuu"].tolist()
+                    selected_student = st.selectbox("Barataa Sirreessuu ykn Haquu barbaaddu filadhu", student_names)
+                    
+                    student_row = db[db["Maqaa Guutuu"] == selected_student].iloc[0]
+                    idx = db[db["Maqaa Guutuu"] == selected_student].index[0]
+
+                    with st.form("edit_student_form"):
+                        e_name = st.text_input("Maqaa Guutuu", value=student_row["Maqaa Guutuu"])
+                        e_grade = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(student_row["Kutaa"])-1)
+                        e_gender = st.selectbox("Koorniyaa", ["Dhiira", "Dhalaa"], index=0 if student_row["Koorniyaa"] == "Dhiira" else 1)
+                        e_phone = st.text_input("Lakk Bilbila Barataa", value=student_row["Lakk Bilbila Barataa"])
+                        
+                        col_update, col_delete = st.columns(2)
+                        update_btn = col_update.form_submit_button("💾 Jijjiirama Save Gochuu")
+                        delete_btn = col_delete.form_submit_button("🗑️ Barataa Kana Haquu (Delete)")
+
+                        if update_btn:
+                            st.session_state.students_db.at[idx, "Maqaa Guutuu"] = e_name
+                            st.session_state.students_db.at[idx, "Kutaa"] = e_grade
+                            st.session_state.students_db.at[idx, "Koorniyaa"] = e_gender
+                            st.session_state.students_db.at[idx, "Lakk Bilbila Barataa"] = e_phone
+                            st.success(f"Odeeffannoon barataa {e_name} milkaa'inaan haaromfameera (Updated)!")
+                            st.rerun()
+
+                        if delete_btn:
+                            st.session_state.students_db = st.session_state.students_db.drop(idx).reset_index(drop=True)
+                            st.warning(f"Barataan {selected_student} galmee keessaa haqameera!")
+                            st.rerun()
+                else:
+                    st.info("Deetaan barataa galmaa'e hin jiru.")                                                data=buffer_f.getvalue(),
+                             
