@@ -614,7 +614,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 )
                 st.markdown("---")
               st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
-
                 if haala_galmee not in [
                     "Mana Barumsaa Biroo",
                     "Irra deebii Mana Barumsaa Biroo",
@@ -633,7 +632,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     mb_duraan = st.text_input(
                         "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
                         value=st.session_state.get("form_mb_biroo", ""),
-                    )
                     )
                 avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
