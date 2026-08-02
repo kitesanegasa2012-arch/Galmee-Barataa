@@ -610,7 +610,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             # FIX #4: Tab 14 kun amma "Haala Galmee" (armaan olitti filatame)
             # irratti hundaa'ee ofumaan jijjiirama - radio button dabre hin
             # barbaachisu.
-            if haala_galmee != "Mana Barumsaa Biroo",:
+            if haala_galmee != "Mana Barumsaa Biroo":
                 auto_school = saved_school_name if saved_school_name else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
                 st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
                 mb_duraan = auto_school
