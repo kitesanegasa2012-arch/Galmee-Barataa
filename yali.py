@@ -1,9 +1,10 @@
+sirreeffame · PY
 from datetime import datetime
 import io
 import sqlite3
 import pandas as pd
 import streamlit as st
-
+ 
 # ============================================================================
 # PAGE CONFIGURATION
 # ============================================================================
@@ -12,6 +13,7 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide",
 )
+ 
 # ============================================================================
 # FIX #1: DIZAAYINII COVER PAGE / WALIIGALAA (nicer fonts, gradient, borders)
 # ============================================================================
