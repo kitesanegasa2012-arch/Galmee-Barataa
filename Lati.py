@@ -624,7 +624,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
         else:
             mb_duraan = st.text_input(
                 "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-                value=st.session_state.get("form_mb_biroo", ""),
+              value=st.session_state.form_mb_biroo,
             )
             avireejjii = st.number_input(
                 "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
