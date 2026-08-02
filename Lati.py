@@ -104,8 +104,6 @@ AUTHORIZED_USERS = {
     "kitesanegasa2012@gmail.com": "kitesanegasa2012password",
     "barsiisaa1@gmail.com": "pass1234",
     "bulchaa@gmail.com": "admin2026",
-    "feyisamililu23@gmaik.com": "20481092F",
-}
 }
 }
 }
