@@ -716,7 +716,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     "Guyyaa Galmee (E.C)": guyyaa_galmee_ec,
                     "Barsiisaa Galmeessee": barsiisaa,
                 }
-                }
                 # FIX #10: database-tti (osoo hin taane session_state-tti qofa) save godhu
                 insert_student(new_data)
 
