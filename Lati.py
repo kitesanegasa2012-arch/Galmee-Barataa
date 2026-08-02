@@ -1,11 +1,11 @@
-from datetime import datetime
+ from datetime import datetime
 import io
 import pandas as pd
 import streamlit as st
 
 # Page Configuration
 st.set_page_config(
-    page_title=" LATI APP",
+    page_title="LATI APP",
     page_icon="🎓",
     layout="wide",
 )
@@ -209,7 +209,7 @@ else:
         ],
     )
 
-    if menu == "1. Cover Page":
+    if menu == "1. Fuula jalqabaa (Cover Page)":
         st.markdown(
             """
             <div class="cover-card">
@@ -240,7 +240,7 @@ else:
                     unsafe_allow_html=True,
                 )
 
-    elif menu == "2. Dashboard Galmee Barataa (Foomii)":
+    elif menu == "2. Dashboard Galmee Barataa (Foormii)":
         st.subheader("📝 Foomii Galmee Barattootaa Haaraa")
 
         with st.form("school_name_form"):
@@ -689,24 +689,27 @@ else:
                 if not db.empty:
                     repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
                     if not repeat_df.empty:
-                        raw_rep = []
-                        for k in range(1, 13):
-                            sub_k = repeat_df[repeat_df["Kutaa"] == str(k)]
-                            d_c = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
-                            dh_c = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
-                            raw_rep.append({
-                                "Kutaa_Num": str(k),
-                                "Kutaa": f"Kutaa {k}",
-                                "Dhiira": d_c,
-                                "Dhalaa": dh_c,
-                                "Ida'ama": d_c + dh_c
-                            })
-                        grouped_rep_df = generate_grouped_report(raw_rep, title_col_name="Kutaa")
-                        st.dataframe(grouped_rep_df, use_container_width=True)
+                        repeat_summary_data = []
+                        haala_types = repeat_df["Haala Galmee"].unique()
+                        for h_type in haala_types:
+                            row = {"Haala Galmee": h_type}
+                            sub_h = repeat_df[repeat_df["Haala Galmee"] == h_type]
+                            
+                            tot_h = 0
+                            for k in range(1, 13):
+                                k_str = str(k)
+                                cnt = len(sub_h[sub_h["Kutaa"] == k_str])
+                                row[f"Kutaa {k}"] = cnt
+                                tot_h += cnt
+                            row["Ida'ama Waliigalaa"] = tot_h
+                            repeat_summary_data.append(row)
+
+                        rep_sum_df = pd.DataFrame(repeat_summary_data)
+                        st.dataframe(rep_sum_df, use_container_width=True)
 
                         buffer_h = io.BytesIO()
                         with pd.ExcelWriter(buffer_h, engine="openpyxl") as writer:
-                            grouped_rep_df.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
+                            rep_sum_df.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
                         st.download_button(
                             label="📥 Lakkoofsa Irra Deebii Download",
                             data=buffer_h.getvalue(),
