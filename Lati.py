@@ -5,7 +5,7 @@ import streamlit as st
 
 # Page Configuration
 st.set_page_config(
-    page_title="Appii Galmee Barattootaa - B/saa Kitesa Negasa",
+    page_title="App Galmee Barattootaa - B/saa Kitesa Negasa",
     page_icon="🎓",
     layout="wide",
 )
@@ -16,118 +16,23 @@ st.markdown(
     <style>
     .main {
         background-color: #f4f6f9;
-        background-image:
-            radial-gradient(circle at top right, rgba(78,115,223,0.08), transparent 45%),
-            radial-gradient(circle at bottom left, rgba(28,200,138,0.08), transparent 45%);
     }
-
-    /* ---------- Cover / Hero card ---------- */
     .cover-card {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 55%, #4e73df 100%);
-        padding: 50px 40px;
-        border-radius: 22px;
-        border: 3px solid rgba(255,255,255,0.25);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        padding: 40px;
+        border-radius: 15px;
         color: white;
         text-align: center;
-        box-shadow: 0 12px 30px rgba(30,60,114,0.35);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    .cover-card::before {
-        content: "";
-        position: absolute;
-        top: -70px; right: -70px;
-        width: 190px; height: 190px;
-        background: rgba(255,255,255,0.08);
-        border-radius: 50%;
-    }
-    .cover-card::after {
-        content: "";
-        position: absolute;
-        bottom: -90px; left: -50px;
-        width: 230px; height: 230px;
-        background: rgba(255,255,255,0.07);
-        border-radius: 50%;
-    }
-    .cover-card h1 {
-        color: #ffffff !important;
-        font-size: 2.5rem;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.25);
-        margin-bottom: 6px;
-    }
-    .cover-card h3 {
-        color: #eaf0ff !important;
-        font-weight: 500;
-        margin-top: 0;
-    }
-    .cover-card p {
-        color: #dce4f7;
-        font-size: 1.05rem;
-        max-width: 720px;
-        margin: 10px auto 0 auto;
-    }
-    .badge-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 18px;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 1;
-    }
-    .badge-pill {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.35);
-        padding: 6px 16px;
-        border-radius: 999px;
-        font-size: 0.85rem;
-        color: #ffffff;
-    }
-
-    /* ---------- Contact card ---------- */
-    .contact-card {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(120deg, #f6c23e 0%, #e8590c 100%);
-        padding: 22px 30px;
-        border-radius: 18px;
-        color: white;
-        box-shadow: 0 8px 20px rgba(232,89,12,0.28);
-        margin-top: 18px;
-        border: 2px solid rgba(255,255,255,0.3);
-    }
-    .contact-card h3 {
-        color: #ffffff !important;
-        margin-top: 0;
-        margin-bottom: 6px;
-    }
-    .contact-card p {
-        color: #fff6ea;
-        margin: 4px 0;
-        font-size: 0.98rem;
-    }
-    .contact-card b { color: #ffffff; }
-
-    /* ---------- Metric cards ---------- */
     .metric-card {
         background-color: #ffffff;
-        border: 1px solid #e3e6f0;
-        border-top: 5px solid #4e73df;
-        border-radius: 14px;
-        padding: 16px 10px;
+        border: 2px solid #e3e6f0;
+        padding: 20px;
+        border-radius: 10px;
         text-align: center;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    .metric-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-    }
-    .metric-card h4 { margin: 0 0 4px 0; font-size: 1rem; }
-    .metric-card h2 { margin: 2px 0; }
-    .metric-card p { margin: 0; }
-
     .stButton>button {
         background-color: #4e73df;
         color: white;
@@ -143,465 +48,693 @@ st.markdown(
         color: #2e384d;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
-    /* ---------- Compact, space-saving field labels ---------- */
-    .stTextInput label, .stSelectbox label, .stNumberInput label,
-    .stTextArea label, .stRadio label, .stDateInput label {
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        color: #2e384d !important;
-        line-height: 1.25 !important;
-    }
-    .stTabs [data-baseweb="tab"] {
-        font-size: 13.5px;
-        font-weight: 600;
-    }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# Color palette used to give each grade card its own accent color
-CARD_COLORS = [
-    "#4e73df", "#1cc88a", "#36b9cc", "#f6c23e",
-    "#e74a3b", "#858796", "#6f42c1", "#fd7e14",
-    "#20c997", "#00b4d8", "#ef476f", "#118ab2",
-]
-
-# Session State Initialization for Database & Targets
+# Session State Initialization for Database, Targets, and School Name
 if "students_db" not in st.session_state:
-  st.session_state.students_db = pd.DataFrame(
-      columns=[
-          "Maqaa Guutuu",
-          "Koorniyaa",
-          "Kutaa",
-          "Bara Dhalootaa",
-          "Umurii",
-          "Haala Galmee",
-          "Bara Addaan Kute",
-          "Haala Maatii",
-          "Miidhama Qaamaa",
-          "Gosa Miidhamaa",
-          "Bakka Dhalootaa (Godina/Aanaa/Ganda)",
-          "Maqaa Haadhaa/Guddistuu",
-          "FAN ID",
-          "Lakk Bilbila Barataa",
-          "Lakk Bilbila Maatii",
-          "M/B Duraan Itti Barachaa Ture",
-          "Avireejjii Qabxii",
-          "Guyyaa Galmee",
-          "Barsiisaa Galmeessee",
-      ]
-  )
+    st.session_state.students_db = pd.DataFrame(
+        columns=[
+            "Maqaa Guutuu",
+            "Koorniyaa",
+            "Kutaa",
+            "Daree (Section)",
+            "Bara Dhalootaa",
+            "Umurii",
+            "Haala Galmee",
+            "Bara Addaan Kute",
+            "Haala Maatii",
+            "Miidhama Qaamaa",
+            "Gosa Miidhamaa",
+            "Godina",
+            "Aanaa",
+            "Ganda",
+            "Maqaa Haadhaa/Guddistuu",
+            "FAN ID",
+            "Lakk Bilbila Barataa",
+            "Lakk Bilbila Maatii",
+            "M/B Duraan Itti Barachaa Ture",
+            "Avireejjii Qabxii",
+            "Guyyaa Galmee (E.C)",
+            "Barsiisaa Galmeessee",
+        ]
+    )
 
 if "targets" not in st.session_state:
-  st.session_state.targets = {
-      str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
-  }
+    st.session_state.targets = {
+        str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
+    }
+
+if "school_name" not in st.session_state:
+    st.session_state.school_name = ""
+
+
+def get_last_location(db, col_name):
+    if not db.empty and col_name in db.columns and len(db[col_name].dropna()) > 0:
+        return db[col_name].dropna().iloc[-1]
+    return ""
+
+
+def generate_grouped_report(data_rows, title_col_name="Kutaa"):
+    rows_1_6_d = sum(r["Dhiira"] for r in data_rows if int(r["Kutaa_Num"]) <= 6)
+    rows_1_6_dh = sum(r["Dhalaa"] for r in data_rows if int(r["Kutaa_Num"]) <= 6)
+
+    rows_7_8_d = sum(r["Dhiira"] for r in data_rows if 7 <= int(r["Kutaa_Num"]) <= 8)
+    rows_7_8_dh = sum(r["Dhalaa"] for r in data_rows if 7 <= int(r["Kutaa_Num"]) <= 8)
+
+    rows_9_12_d = sum(r["Dhiira"] for r in data_rows if int(r["Kutaa_Num"]) >= 9)
+    rows_9_12_dh = sum(r["Dhalaa"] for r in data_rows if int(r["Kutaa_Num"]) >= 9)
+
+    final_table = []
+
+    for r in data_rows:
+        if int(r["Kutaa_Num"]) <= 6:
+            final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
+    final_table.append({title_col_name: "Ida'ama Kutaa 1 - 6", "Dhiira": rows_1_6_d, "Dhalaa": rows_1_6_dh, "Ida'ama": rows_1_6_d + rows_1_6_dh})
+
+    for r in data_rows:
+        if 7 <= int(r["Kutaa_Num"]) <= 8:
+            final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
+    final_table.append({title_col_name: "Ida'ama Kutaa 7 - 8", "Dhiira": rows_7_8_d, "Dhalaa": rows_7_8_dh, "Ida'ama": rows_7_8_d + rows_7_8_dh})
+
+    final_table.append({title_col_name: "Ida'ama Waliigalaa (1 - 8)", "Dhiira": rows_1_6_d + rows_7_8_d, "Dhalaa": rows_1_6_dh + rows_7_8_dh, "Ida'ama": (rows_1_6_d + rows_7_8_d) + (rows_1_6_dh + rows_7_8_dh)})
+
+    for r in data_rows:
+        if int(r["Kutaa_Num"]) >= 9:
+            final_table.append({title_col_name: r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
+    final_table.append({title_col_name: "Ida'ama Kutaa 9 - 12", "Dhiira": rows_9_12_d, "Dhalaa": rows_9_12_dh, "Ida'ama": rows_9_12_d + rows_9_12_dh})
+
+    tot_d = rows_1_6_d + rows_7_8_d + rows_9_12_d
+    tot_dh = rows_1_6_dh + rows_7_8_dh + rows_9_12_dh
+    final_table.append({title_col_name: "Waliigalaa (1 - 12)", "Dhiira": tot_d, "Dhalaa": tot_dh, "Ida'ama": tot_d + tot_dh})
+
+    return pd.DataFrame(final_table)
+
 
 # ----------------- NAVIGATION / PAGES -----------------
 st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
 menu = st.sidebar.selectbox(
     "Filannoo Fuulaa (Navigation)",
     [
-        "1. Fuula Duraa (Cover Page)",
-        "2. Dashboard Galmee Barataa (Foormii/Form)",
+        "1. Cover Page",
+        "2. Dashboard Galmee Barataa (Foomii)",
         "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
     ],
 )
 
 # ----------------- 1. COVER PAGE -----------------
-if menu == "1. Fuula Duraa (Cover Page)":
-  st.markdown(
-      """
+if menu == "1. Cover Page":
+    st.markdown(
+        """
         <div class="cover-card">
-            <h1>🎓 APPII GALMEE BARATTOOTAA</h1>
-            <h3>Baga Nagaan Gara Appii Galmee Barattootaa Mana Barumsaa B/saa Kitesa Negasaa Dhuftan!</h3>
-            <p>Sirni kun odeeffannoo barattootaa qabachuuf, gabaasa oomishuuf fi hordoffii taasisuuf kan qophaa'eedha.</p>
-            <div class="badge-row">
-                <span class="badge-pill">📚 Galmee Elektirooniksii</span>
-                <span class="badge-pill">📊 Gabaasa Battalumaan</span>
-                <span class="badge-pill">🔒 Nageenya Odeeffannoo</span>
-            </div>
+            <h1>🎓 APP GALMEE BARATTOOTAA</h1>
+            <h3>Baga Nagaan Gara App Galmee Barattootaa Mana Barumsaa B/saa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
+            <p>Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa oomishuuf fi hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
-      unsafe_allow_html=True,
-  )
-
-  st.markdown(
-      """
-        <div class="contact-card">
-            <h3>📞 Toora Odeeffannoo fi Qunnamtii (Contact Information)</h3>
-            <p>Eeyyama Appii kanatti fayyadamuu argachuuf ykn gaaffii kamiyyuu yoo qabaattan,
-            karaalee qunnamtii armaan gadiitiin nu qunnamuu dandeessu:</p>
-            <p>📱 <b>Bilbilaa fi Telegiraamii (Phone &amp; Telegram):</b> +251969184005 / 0910927936</p>
-            <p>📧 <b>Imeelii (Gmail):</b> kitesanegasa2012@gmail.com</p>
-        </div>
-        """,
-      unsafe_allow_html=True,
-  )
-
-  st.write("---")
-  st.subheader("📊 Lakkoofsa Barattootaa Galmaa'anii Kutaadhaan (Number of Enrolled Students by Grade)")
-
-  db = st.session_state.students_db
-  cols = st.columns(4)
-  for i in range(1, 13):
-    count = len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
-    color = CARD_COLORS[(i - 1) % len(CARD_COLORS)]
-    with cols[(i - 1) % 4]:
-      st.markdown(
-          f"""
-                <div class="metric-card" style="border-top-color:{color};">
-                    <h4>Kutaa {i} <span style="font-size:11px;color:#858796;">(Grade {i})</span></h4>
-                    <h2 style="color:{color};">{count}</h2>
-                    <p style="font-size:11px;color:#6b7280;">Barattoota Galmaa'an (Enrolled)</p>
-                </div>
-                """,
-          unsafe_allow_html=True,
-      )
-
-# ----------------- 2. DASHBOARD GALMEE BARATTOOTAA (FOOMII) -----------------
-elif menu == "2. Dashboard Galmee Barataa (Foormii/Form)":
-  st.subheader("📝 Foormii Galmee Barattootaa Haaraa (New Student Registration Form)")
-
-  with st.form("registration_form"):
-    col1, col2 = st.columns(2)
-
-    with col1:
-      maqaa_guutuu = st.text_input("1. Maqaa Guutuu Barataa (Student Full Name)")
-      koorniyaa = st.selectbox("2. Koorniyaa (Gender)", ["Filadhu", "Dhiira", "Dhalaa"])
-      kutaa = st.selectbox("3. Kutaa (Grade)", [str(i) for i in range(1, 13)])
-
-      st.markdown("**4. Bara Dhalootaa (Date of Birth - Akka Lakkoofsa Itoophiyaatti)**")
-      b_col1, b_col2, b_col3 = st.columns(3)
-      b_guyyaa = b_col1.selectbox("Guyyaa (Day)", [str(i) for i in range(1, 31)])
-      b_jiia = b_col2.selectbox(
-          "Ji'a (Month)",
-          [
-              "Meskerem",
-              "Tikimt",
-              "Hidar",
-              "Tahsas",
-              "Tir",
-              "Yekatit",
-              "Megabit",
-              "Meyazia",
-              "Genbot",
-              "Sene",
-              "Hamle",
-              "Nehase",
-              "Pagume",
-          ],
-      )
-      b_bara = b_col3.number_input(
-          "Bara (Year) (Fkn: 2005)", min_value=1980, max_value=2025, value=2010
-      )
-      current_et_year = 2018
-      umurii = current_et_year - b_bara
-
-      haala_galmee = st.selectbox(
-          "5. Haala Galmee (Registration Status)",
-          [
-              "Haaraa",
-              "Irra deebii (Kufe)",
-              "Irra deebii (Kute)",
-              "Mana Barumsaa Biroo",
-          ],
-      )
-      bara_addaan_kute = (
-          st.selectbox(
-              "Bara Addaan Kute (Year Discontinued - Yoo jiraate)",
-              ["Hin jiru", "2005", "2006", "2007", "2008", "2009", "2010"]
-              + [str(y) for y in range(2011, 2027)],
-          )
-          if "deebii" in haala_galmee
-          else "Hin jiru"
-      )
-
-      haala_maatii = st.selectbox(
-          "6. Haala Maatii (Family Status)",
-          ["Lachuu qaba", "Abbaa qofa", "Haadha qofa", "Lachuu hin qabu"],
-      )
-      miidhama_qaamaa = st.selectbox(
-          "7. Haala Miidhama Qaamaa (Disability Status)", ["Hin jiru", "Jira"]
-      )
-      gosa_miidhamaa = (
-          st.selectbox(
-              "Gosa Miidhama Qaamaa (Type of Disability)",
-              [
-                  "Arguu salphaa",
-                  "Arguu cimaa",
-                  "Dhageettii salphaa",
-                  "Dhageettii cimaa",
-                  "Sochii harkaa salphaa",
-                  "Sochii harkaa cimaa",
-                  "Sochii miilaa salphaa",
-                  "Sochii miilaa cimaa",
-                  "Rakkoo dubbii salphaa",
-                  "Rakkoo dubbii cimaa",
-                  "Saaleessa sammuu",
-                  "Currisa hawaasummaa",
-              ],
-          )
-          if miidhama_qaamaa == "Jira"
-          else "Hin jiru"
-      )
-
-    with col2:
-      bakka_dhalootaa = st.text_input(
-          "8. Bakka Dhalootaa (Place of Birth - Godina, Aanaa, Ganda)"
-      )
-      maqaa_haadhaa = st.text_input("9. Maqaa Guutuu Haadhaa ykn Guddistuu (Mother/Guardian Full Name)")
-      fan_id = st.text_input("10. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID)")
-      lakk_bilbila_barataa = st.text_input("11. Lakkoofsa Bilbila Barataa (Student Phone Number)")
-      lakk_bilbila_maatii = st.text_input("12. Lakkoofsa Bilbila Maatii (Family Phone Number)")
-      mb_duraan = st.text_input("13. Mana Barumsaa Duraan Itti Barachaa Ture (Previous School)")
-
-      avireejjii = st.number_input(
-          "14. Avireejjii Qabxii Bara Darbee (Average Score, 0 - 100)",
-          min_value=0.0,
-          max_value=100.0,
-          value=75.0,
-      )
-
-      if avireejjii < 50:
-        st.markdown(
-            '<p style="color:red; font-weight:bold;">⚠️ Qabxiin kun 50 gadi waan ta\'eef, '
-            '"Haala Galmee" jalatti "Kufe" jedhamee filatamuu qaba! '
-            '(Score is below 50 — please select "Kufe/Failed" under Registration Status.)</p>',
-            unsafe_allow_html=True,
-        )
-
-      barsiisaa = st.text_input("15. Barsiisaa Galmeessee (Registering Teacher)")
-      guyyaa_galmee = str(datetime.now().date())
-
-    submitted = st.form_submit_button("💾 Olkaa'i (Save)")
-
-    if submitted:
-      if not maqaa_guutuu or not fan_id:
-        st.error("Maaloo Maqaa Guutuu fi FAN ID guuti! (Please fill in Full Name and FAN ID)")
-      else:
-        new_data = {
-            "Maqaa Guutuu": maqaa_guutuu,
-            "Koorniyaa": koorniyaa,
-            "Kutaa": kutaa,
-            "Bara Dhalootaa": f"{b_guyyaa}/{b_jiia}/{b_bara}",
-            "Umurii": umurii,
-            "Haala Galmee": haala_galmee,
-            "Bara Addaan Kute": bara_addaan_kute,
-            "Haala Maatii": haala_maatii,
-            "Miidhama Qaamaa": miidhama_qaamaa,
-            "Gosa Miidhamaa": gosa_miidhamaa,
-            "Bakka Dhalootaa (Godina/Aanaa/Ganda)": bakka_dhalootaa,
-            "Maqaa Haadhaa/Guddistuu": maqaa_haadhaa,
-            "FAN ID": fan_id,
-            "Lakk Bilbila Barataa": lakk_bilbila_barataa,
-            "Lakk Bilbila Maatii": lakk_bilbila_maatii,
-            "M/B Duraan Itti Barachaa Ture": mb_duraan,
-            "Avireejjii Qabxii": avireejjii,
-            "Guyyaa Galmee": guyyaa_galmee,
-            "Barsiisaa Galmeessee": barsiisaa,
-        }
-        st.session_state.students_db = pd.concat(
-            [st.session_state.students_db, pd.DataFrame([new_data])],
-            ignore_index=True,
-        )
-        st.success(
-            f"Galmeen barataa {maqaa_guutuu} milkaa'inaan galmeeffameera! (Successfully saved)"
-        )
-
-# ----------------- 3. DASHBOARD BARSIISAA / GABAASAA -----------------
-elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
-  st.subheader("🔐 Dashboard Barsiisaa (Teacher Dashboard - Seensa Eeyyamame)")
-
-  password = st.text_input("Password Galchi (Enter Password)", type="password")
-
-  if password == "kitesa2019" or password == "admin123":
-    st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa. (Login successful — you can view reports and plans.)")
-
-    tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs(
-        [
-            "A. Karoora (Target)",
-            "B. Gabaasa Guutuu (Full Report - Excel)",
-            "C. Guyyaa - Kutaa 1 (Grade 1 Age Report)",
-            "D. Lakkoofsa (Count Summary)",
-            "E. Miidhamaa - Detail (Disability Detail)",
-            "F. Miidhamaa - Lakkoofsa (Disability Count)",
-            "G. Irra-Deebii - Detail (Repeaters Detail)",
-            "H. Irra-Deebii - Lakkoofsa (Repeaters Count)",
-            "I. Gabaasa 2019 (Annual Report)",
-            "J. Sirreessi/Haqi (Edit/Delete)",
-        ]
+        unsafe_allow_html=True,
     )
 
+    st.write("---")
+    st.subheader("📊 Lakkoofsa Barattootaa Galmaa'anii (Kutaa Kutaan)")
+
     db = st.session_state.students_db
+    cols = st.columns(4)
+    for i in range(1, 13):
+        count = len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
+        with cols[(i - 1) % 4]:
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <h4>Kutaa {i}</h4>
+                    <h2 style="color: #4e73df;">{count}</h2>
+                    <p>Barattoota Galmaa'an</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-    with tabA:
-      st.markdown("#### A. Gucaa Karoora Galmee Barattootaa 2019 (Student Registration Target Sheet)")
-      with st.form("target_form"):
-        selected_grade = st.selectbox(
-            "Kutaa Filadhu (Select Grade)", [str(i) for i in range(1, 13)]
+# ----------------- 2. DASHBOARD GALMEE BARATTOOTAA (FOOMII) -----------------
+elif menu == "2. Dashboard Galmee Barataa (Foomii)":
+    st.subheader("📝 Foomii Galmee Barattootaa Haaraa")
+
+    # School Name Input Block (Before filling student info)
+    with st.form("school_name_form"):
+        st.markdown("### Maqaa Mana Barumsaa Galmeessaa")
+        input_school = st.text_input(
+            "Maqaa Mana Barumsaa",
+            value=st.session_state.school_name,
+            placeholder="Fkn: M/B Sadarkaa 2ffaa Kitesa Negasa",
         )
-        t_dhiira = st.number_input(
-            "Karoora Dhiiraa (Male Target)",
-            min_value=0,
-            value=st.session_state.targets[selected_grade]["Dhiira"],
-        )
-        t_dhalaa = st.number_input(
-            "Karoora Dhalaa (Female Target)",
-            min_value=0,
-            value=st.session_state.targets[selected_grade]["Dhalaa"],
-        )
-        save_target = st.form_submit_button("Karoora Galchi (Save Target)")
-        if save_target:
-          st.session_state.targets[selected_grade]["Dhiira"] = t_dhiira
-          st.session_state.targets[selected_grade]["Dhalaa"] = t_dhalaa
-          st.success(f"Karoora Kutaa {selected_grade} galmeeffameera! (Target saved)")
+        save_school_btn = st.form_submit_button("🏫 Maqaa Mana Barumsaa Save Gochuu")
+        if save_school_btn:
+            if input_school.strip():
+                st.session_state.school_name = input_school.strip()
+                st.success("Maqaa mana barumsaa milkaa'inaan save ta'eera!")
+            else:
+                st.warning("Maaloo maqaa mana barumsaa galchi!")
 
-    with tabB:
-      st.markdown("#### B. Gucaa Gabaasaa Waligalaa Barattootaa (Overall Report - Excel Download)")
-      if not db.empty:
-        st.dataframe(db)
-        buffer = io.BytesIO()
-        with pd.ExcelWriter(buffer, engine="xlsxwriter") as writer:
-          db.to_excel(writer, sheet_name="Gabaasa_Guutuu", index=False)
-        st.download_button(
-            label="📥 Excel-tti Buufadhu (Download as Excel)",
-            data=buffer.getvalue(),
-            file_name="Gabaasa_Waligalaa_Barattootaa.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-      else:
-        st.info("Deetaan galmaa'e hin jiru. (No data has been registered yet.)")
+    if st.session_state.school_name:
+        st.info(f"📌 Mana Barumsaa Galmaa'e: **{st.session_state.school_name}**")
+    else:
+        st.warning("⚠️ Jalqaba maqaa mana barumsaa oliitti save godhaa!")
 
-    with tabC:
-      st.markdown("#### C. Gucaa Gabaasaa Kutaa 1, Umurii 7 (Grade 1 Students Aged 7)")
-      if not db.empty:
-        filtered_c = db[(db["Kutaa"] == "1") & (db["Umurii"] == 7)]
-        st.write(f"Baay'ina Barattoota Kutaa 1 (Umurii 7): {len(filtered_c)}  *(Number of Grade 1 students aged 7)*")
-        st.dataframe(filtered_c)
-      else:
-        st.info("Deetaan hin jiru. (No data available.)")
+    st.write("---")
 
-    with tabD:
-      st.markdown("#### D. Gabaasa Lakkoofsaa Kutaa, Saalaa fi Umuriin (Count by Grade, Gender & Age)")
-      if not db.empty:
-        summary_d = (
-            db.groupby(["Kutaa", "Umurii", "Koorniyaa"])
-            .size()
-            .reset_index(name="Baay'ina")
-        )
-        st.dataframe(summary_d)
-      else:
-        st.info("Deetaan hin jiru. (No data available.)")
+    db_existing = st.session_state.students_db
+    default_godina = get_last_location(db_existing, "Godina")
+    default_aanaa = get_last_location(db_existing, "Aanaa")
+    default_ganda = get_last_location(db_existing, "Ganda")
 
-    with tabE:
-      st.markdown("#### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii (Students with Disabilities - Full Details)")
-      if not db.empty:
-        disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
-        st.dataframe(disabled_df)
-      else:
-        st.info("Deetaan hin jiru. (No data available.)")
+    with st.form("registration_form", clear_on_submit=True):
+        col1, col2 = st.columns(2)
 
-    with tabF:
-      st.markdown("#### F. Gabaasa Lakkoofsaa Miidhama Qaamaa & Haala Maatii (Disability & Family Status Count)")
-      if not db.empty:
-        st.write("**Miidhama Qaamaa Gosaan (By Disability Type):**")
-        st.dataframe(
-            db[db["Miidhama Qaamaa"] == "Jira"]["Gosa Miidhamaa"].value_counts()
-        )
-        st.write("**Haala Maatii (Family Status):**")
-        st.dataframe(db["Haala Maatii"].value_counts())
+        with col1:
+            maqaa_guutuu = st.text_input("1. Maqaa Guutuu Barataa")
+            koorniyaa = st.selectbox("2. Koorniyaa", ["Filadhu", "Dhiira", "Dhalaa"])
 
-    with tabG:
-      st.markdown("#### G. Gabaasa Barattoota Irra Deebi'anii (Report of Repeating Students)")
-      if not db.empty:
-        repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
-        st.dataframe(
-            repeat_df[
+            grade_col1, grade_col2 = st.columns(2)
+            kutaa = grade_col1.selectbox("3. Kutaa", [str(i) for i in range(1, 13)])
+            daree = grade_col2.selectbox("Daree (Section)", [chr(65 + i) for i in range(11)])
+
+            st.markdown("**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**")
+            b_col1, b_col2, b_col3 = st.columns(3)
+            b_guyyaa = b_col1.selectbox("Guyyaa", [str(i) for i in range(1, 32)])
+            b_jiia = b_col2.selectbox(
+                "Ji'a",
                 [
-                    "Maqaa Guutuu",
-                    "Koorniyaa",
-                    "Kutaa",
-                    "Haala Galmee",
-                    "Bara Addaan Kute",
+                    "Fulbaana", "Onkololeessa", "Hacaaluu/Hidar", "Tamsaasa/Tahsas",
+                    "Amajjii", "Guraandhala", "Bitootessa", "Ebla", "Caamsaa",
+                    "Waxabajjii", "Aoleessa/Hamle", "Hagayya", "Pagume",
+                ],
+            )
+            b_bara = b_col3.number_input(
+                "Bara Dhalootaa (Fkn: 2011)", min_value=1990, max_value=2025, value=2011
+            )
+            current_et_year = 2018
+            umurii = current_et_year - b_bara
+
+            haala_galmee = st.selectbox(
+                "5. Haala Galmee",
+                ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"],
+            )
+
+            bara_addaan_kute = st.selectbox(
+                "Bara Addaan Kute (Yoo kute/kufe)",
+                ["Hin jiru", "2005", "2006", "2007", "2008", "2009", "2010"]
+                + [str(y) for y in range(2011, 2027)],
+            )
+
+            haala_maatii = st.selectbox(
+                "6. Haala Maatii",
+                ["Lachuu qaba", "Abbaa qofa", "Haadha qofa", "Lachuu hin qabu"],
+            )
+
+            miidhama_qaamaa = st.selectbox(
+                "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
+            )
+
+            gosa_miidhamaa = st.selectbox(
+                "8. Gosa Miidhama Qaamaa (Yoo Jira ta'e filadhu)",
+                [
+                    "Hin qabu", "Arguu salphaa", "Arguu cimaa", "Dhageettii salphaa",
+                    "Dhageettii cimaa", "Dubbii salphaa", "Dubbii cimaa", "Sochii salphaa",
+                    "Sochii cimaa", "Saaleessa sammuu", "Currisa hawaasumaa", "Haadhaa fi abbaa dhabuu"
                 ]
+            )
+
+        with col2:
+            st.markdown("**9. Bakka Dhalootaa**")
+            godina = st.text_input("Godina", value=default_godina)
+            aanaa = st.text_input("Aanaa", value=default_aanaa)
+            ganda = st.text_input("Ganda", value=default_ganda)
+
+            maqaa_haadhaa = st.text_input("10. Maqaa Guutuu Haadhaa ykn Guddistuu")
+            fan_id = st.text_input("11. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID - Digiti 16)")
+            lakk_bilbila_barataa = st.text_input("12. Lakkoofsa Bilbila Barataa (+251...)")
+            lakk_bilbila_maatii = st.text_input("13. Lakkoofsa Bilbila Maatii (+251...)")
+            mb_duraan = st.text_input("14. Mana Barumsaa Duraan Itti Barachaa Ture")
+
+            avireejjii = st.number_input(
+                "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
+                min_value=0.0, max_value=100.0, value=75.0,
+            )
+
+            barsiisaa = st.text_input("16. Barsiisaa Galmeessee")
+            guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C - Fkn: 25/11/2018)", value="25/11/2018")
+
+        submitted = st.form_submit_button("💾 Save (Enter)")
+
+        if submitted:
+            error_msgs = []
+            warning_msgs = []
+
+            if not st.session_state.school_name:
+                error_msgs.append("Maaloo jalqaba Maqaa Mana Barumsaa save godhaa!")
+            if not maqaa_guutuu:
+                error_msgs.append("Maqaa Guutuu barataa guuti!")
+            if koorniyaa == "Filadhu":
+                error_msgs.append("Maaloo Koorniyaa barataa filadhu!")
+
+            # Mana Barumsaa Biroo validation vs M/B Duraan Itti Barachaa Ture
+            saved_school_lower = st.session_state.school_name.strip().lower()
+            input_mb_lower = mb_duraan.strip().lower()
+
+            if input_mb_lower:
+                if input_mb_lower == saved_school_lower and haala_galmee == "Mana Barumsaa Biroo":
+                    error_msgs.append('Halluu diimaan: M/B duraan itti barachaa ture maqaa mana barumsaa kanaa wajjin wal-qixxaachaa waan jiruuf, Haala Galmee "Mana Barumsaa Biroo" jechuu hin qabu!')
+                elif input_mb_lower != saved_school_lower and haala_galmee != "Mana Barumsaa Biroo":
+                    error_msgs.append('Halluu diimaan: M/B duraan itti barachaa ture maqaa mana barumsaa kanaan ala waan ta\'eef, Haala Galmee "Mana Barumsaa Biroo" jechuu qaba!')
+
+            # Average & Fail validation
+            if avireejjii < 50 and haala_galmee != "Irra deebii (Kufe)":
+                error_msgs.append('Halluu diimaan: Barataan avireejjii 50 gadi fide haala galmeen "Irra deebii (Kufe)" jedhuun walsimuu qaba!')
+
+            # FAN ID validation (16 digits)
+            clean_fan = fan_id.strip()
+            if clean_fan and (not clean_fan.isdigit() or len(clean_fan) != 16):
+                error_msgs.append("FAN ID dijiitii 16 qofa ta'uu qaba! (16 gadi ykn ol ta'uu hin danda'u)")
+
+
+            # Phone validation (+251 and 9 digits)
+            def validate_phone(phone_str, field_label):
+                p = phone_str.strip()
+                if not p.startswith("+251"):
+                    return f"{field_label}: Lakkoofsi bilbilaa '+251' tiin jalqabuu qaba!"
+                subscriber_part = p[4:]
+                if len(subscriber_part) < 9:
+                    return f"{field_label}: Lakk. ni hanqata (dijiitii 9 guutuu qaba)."
+                elif len(subscriber_part) > 9:
+                    return f"{field_label}: Irra darbe (dijiitii 9 qofa ta'uu qaba)."
+                elif not subscriber_part.isdigit():
+                    return f"{field_label}: Koodii biyyaa itti aansuun lakkoofsi jiru dijiitii qofa ta'uu qaba."
+                return None
+
+
+            if lakk_bilbila_barataa.strip():
+                err_p1 = validate_phone(lakk_bilbila_barataa, "Bilbila Barataa")
+                if err_p1:
+                    error_msgs.append(err_p1)
+
+            if lakk_bilbila_maatii.strip():
+                err_p2 = validate_phone(lakk_bilbila_maatii, "Bilbila Maatii")
+                if err_p2:
+                    error_msgs.append(err_p2)
+
+            # Soft warning check (Keelloo) for minor field imperfections if any
+            if not aanaa.strip() or not godina.strip():
+                warning_msgs.append("Odeeffannoo bakka dhalootaa (Godina ykn Aanaa) guutuu miti.")
+
+            if error_msgs:
+                for err in error_msgs:
+                    st.markdown(f'<p style="color:red; font-weight:bold;">⚠️ {err}</p>', unsafe_allow_html=True)
+            elif warning_msgs:
+                for warn in warning_msgs:
+                    st.markdown(
+                        f'<div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-weight: bold;">⚠️ {warn} - Maqaa barataa: {maqaa_guutuu} (Odeeffannoo kee sirreefadhu!)</div>',
+                        unsafe_allow_html=True,
+                    )
+                st.warning("Odeeffannoo keessatti hanqina jiraachuun isaa ibsameera; sirreessitee irra deebi'i.")
+            else:
+                new_data = {
+                    "Maqaa Guutuu": maqaa_guutuu,
+                    "Koorniyaa": koorniyaa,
+                    "Kutaa": kutaa,
+                    "Daree (Section)": daree,
+                    "Bara Dhalootaa": f"{b_guyyaa}/{b_jiia}/{b_bara}",
+                    "Umurii": umurii,
+                    "Haala Galmee": haala_galmee,
+                    "Bara Addaan Kute": bara_addaan_kute,
+                    "Haala Maatii": haala_maatii,
+                    "Miidhama Qaamaa": miidhama_qaamaa,
+                    "Gosa Miidhamaa": gosa_miidhamaa,
+                    "Godina": godina,
+                    "Aanaa": aanaa,
+                    "Ganda": ganda,
+                    "Maqaa Haadhaa/Guddistuu": maqaa_haadhaa,
+                    "FAN ID": fan_id,
+                    "Lakk Bilbila Barataa": lakk_bilbila_barataa,
+                    "Lakk Bilbila Maatii": lakk_bilbila_maatii,
+                    "M/B Duraan Itti Barachaa Ture": mb_duraan,
+                    "Avireejjii Qabxii": avireejjii,
+                    "Guyyaa Galmee (E.C)": guyyaa_galmee_ec,
+                    "Barsiisaa Galmeessee": barsiisaa,
+                }
+                st.session_state.students_db = pd.concat(
+                    [st.session_state.students_db, pd.DataFrame([new_data])],
+                    ignore_index=True,
+                )
+                st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
+
+# ----------------- 3. DASHBOARD BARSIISAA / GABAASAA (PASSWORD PROTECTED) -----------------
+elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
+    st.subheader("🔐 Dashboard Barsiisaa (Seensa Eeyyamame)")
+
+    password = st.text_input("Password Galchi", type="password")
+
+    if password == "kitesa2019" or password == "admin123":
+        st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa.")
+
+        school_display = st.session_state.school_name if st.session_state.school_name else "Mana Barumsaa (Hin beekamne)"
+
+        tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs(
+            [
+                "Karoora", "Guutuu", "Guyyaa", "Hanga Ammaa", "Miidhamaa",
+                "Lak. Miidhamaa", "Irra Deebii", "Lak. Irra Deebii", "Karoora vs Raawwii", "Edit/Delete"
             ]
         )
-      else:
-        st.info("Deetaan hin jiru. (No data available.)")
 
-    with tabH:
-      st.markdown("#### H. Gabaasa Lakkoofsaa Barattoota Irra Deebi'anii (Count of Repeating Students)")
-      if not db.empty:
-        repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
-        st.dataframe(
-            repeat_df.groupby(["Kutaa", "Koorniyaa", "Haala Galmee"])
-            .size()
-            .reset_index(name="Baay'ina")
-        )
-      else:
-        st.info("Deetaan hin jiru. (No data available.)")
+        db = st.session_state.students_db
 
-    with tabI:
-      st.markdown("#### I. Gabaasa Galmee Waligalaa Bara 2019 (Overall Annual Registration Report)")
-      perf_data = []
-      for k in range(1, 13):
-        k_str = str(k)
-        t_d = st.session_state.targets[k_str]["Dhiira"]
-        t_dh = st.session_state.targets[k_str]["Dhalaa"]
-        t_tot = t_d + t_dh
+        with tabA:
+            st.markdown(f"### A. Guca Karoora Galmee Barataa - {school_display}")
+            with st.form("target_form"):
+                selected_grade = st.selectbox(
+                    "Kutaa Filadhu", [str(i) for i in range(1, 13)]
+                )
+                t_dhiira = st.number_input(
+                    "Karoora Dhiiraa",
+                    min_value=0,
+                    value=st.session_state.targets[selected_grade]["Dhiira"],
+                )
+                t_dhalaa = st.number_input(
+                    "Karoora Dhalaa",
+                    min_value=0,
+                    value=st.session_state.targets[selected_grade]["Dhalaa"],
+                )
+                save_target = st.form_submit_button("Karoora Galchi")
+                if save_target:
+                    st.session_state.targets[selected_grade]["Dhiira"] = t_dhiira
+                    st.session_state.targets[selected_grade]["Dhalaa"] = t_dhalaa
+                    st.success(f"Karoora Kutaa {selected_grade} galmeeffameera!")
 
-        r_d = (
-            len(db[(db["Kutaa"] == k_str) & (db["Koorniyaa"] == "Dhiira")])
-            if not db.empty
-            else 0
-        )
-        r_dh = (
-            len(db[(db["Kutaa"] == k_str) & (db["Koorniyaa"] == "Dhalaa")])
-            if not db.empty
-            else 0
-        )
-        r_tot = r_d + r_dh
+            raw_targets = []
+            for k in range(1, 13):
+                k_str = str(k)
+                td = st.session_state.targets[k_str]["Dhiira"]
+                tdh = st.session_state.targets[k_str]["Dhalaa"]
+                raw_targets.append({
+                    "Kutaa_Num": k_str,
+                    "Kutaa": f"Kutaa {k}",
+                    "Dhiira": td,
+                    "Dhalaa": tdh,
+                    "Ida'ama": td + tdh
+                })
 
-        p_d = (r_d / t_d * 100) if t_d > 0 else 0
-        p_dh = (r_dh / t_dh * 100) if t_dh > 0 else 0
-        p_tot = (r_tot / t_tot * 100) if t_tot > 0 else 0
+            target_df = generate_grouped_report(raw_targets, title_col_name="Kutaa")
+            st.dataframe(target_df, use_container_width=True)
 
-        perf_data.append({
-            "Kutaa": f"Kutaa {k}",
-            "Karoora Dhiira": t_d,
-            "Karoora Dhalaa": t_dh,
-            "Karoora Waligalaa": t_tot,
-            "Raawwii Dhiira": r_d,
-            "Raawwii Dhalaa": r_dh,
-            "Raawwii Waligalaa": r_tot,
-            "% Dhiira": round(p_d, 1),
-            "% Dhalaa": round(p_dh, 1),
-            "% Waligalaa": round(p_tot, 1),
-        })
-      st.dataframe(pd.DataFrame(perf_data))
+            buffer_t = io.BytesIO()
+            with pd.ExcelWriter(buffer_t, engine="openpyxl") as writer:
+                target_df.to_excel(writer, sheet_name="Karoora_Galmee", index=False)
+            st.download_button(
+                label="📥 Karoora Print / Excel-tti Download Gochuu",
+                data=buffer_t.getvalue(),
+                file_name="Karoora_Galmee_Barattootaa.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
 
-    with tabJ:
-      st.markdown("#### J. Sirreessi ykn Haqi Deetaa Barataa (Edit / Delete Student Data)")
-      if not db.empty:
-        idx_to_modify = st.number_input(
-            "Lakk. Index Barataa jijjiiruu/haquu barbaadde (Student Record Index)",
-            min_value=0,
-            max_value=max(0, len(db) - 1),
-            step=1,
-        )
-        st.write(db.iloc[idx_to_modify])
+        with tabB:
+            st.markdown(f"### B. Guca Gabaasaa Waligalaa Barataa - {school_display}")
+            if not db.empty:
+                st.dataframe(db, use_container_width=True)
+                buffer = io.BytesIO()
+                with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+                    db.to_excel(writer, sheet_name="Gabaasa_Guutuu", index=False)
+                st.download_button(
+                    label="📥 Gabaasa Guutuu Print / Excel-tti Download Gochuu",
+                    data=buffer.getvalue(),
+                    file_name="Gabaasa_Waligalaa_Barattootaa.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            else:
+                st.info("Deetaan galmaa'e hin jiru.")
 
-        if st.button("🗑️ Barataa Kana Haquu (Delete)"):
-          st.session_state.students_db = db.drop(idx_to_modify).reset_index(
-              drop=True
-          )
-          st.success("Deetaan barataa haqameera! (Student data has been deleted.)")
-          st.rerun()
-      else:
-        st.info("Deetaan jijjiiramu hin jiru. (No data available to edit.)")
+        with tabC:
+            st.markdown(f"### C. Gabaasa Galmee Guyyaa Tokkoo - {school_display}")
+            if not db.empty:
+                available_dates = db["Guyyaa Galmee (E.C)"].unique().tolist()
+                selected_date = st.selectbox("Guyyaa Filadhu (E.C)", available_dates, key="select_date_c")
+                day_df = db[db["Guyyaa Galmee (E.C)"] == selected_date]
 
-  elif password != "":
-    st.error("Password sirrii miti! Irra deebi'ii yaali. (Incorrect password — please try again.)")
+                if not day_df.empty:
+                    raw_day = []
+                    for k in range(1, 13):
+                        sub_k = day_df[day_df["Kutaa"] == str(k)]
+                        d_c = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                        dh_c = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                        raw_day.append({
+                            "Kutaa_Num": str(k),
+                            "Kutaa": f"Kutaa {k}",
+                            "Dhiira": d_c,
+                            "Dhalaa": dh_c,
+                            "Ida'ama": d_c + dh_c
+                        })
+                    grouped_day_df = generate_grouped_report(raw_day, title_col_name="Kutaa")
+                    st.dataframe(grouped_day_df, use_container_width=True)
+
+                    buffer_c = io.BytesIO()
+                    with pd.ExcelWriter(buffer_c, engine="openpyxl") as writer:
+                        grouped_day_df.to_excel(writer, sheet_name="Gabaasa_Guyyaa", index=False)
+                    st.download_button(
+                        label="📥 Gabaasa Guyyaa Print / Excel",
+                        data=buffer_c.getvalue(),
+                        file_name=f"Gabaasa_Guyyaa_{selected_date.replace('/', '-')}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Guyyaa filatame kana deetaan hin jiru.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
+
+        with tabD:
+            st.markdown(f"### D. Gabaasa Galmee Hanga Ammaatti - {school_display}")
+            if not db.empty:
+                raw_summary = []
+                for k in range(1, 13):
+                    sub_k = db[db["Kutaa"] == str(k)]
+                    d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                    dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                    raw_summary.append({
+                        "Kutaa_Num": str(k),
+                        "Kutaa": f"Kutaa {k}",
+                        "Dhiira": d,
+                        "Dhalaa": dh,
+                        "Ida'ama": d + dh
+                    })
+                summary_df = generate_grouped_report(raw_summary, title_col_name="Kutaa")
+                st.dataframe(summary_df, use_container_width=True)
+
+                buffer_d = io.BytesIO()
+                with pd.ExcelWriter(buffer_d, engine="openpyxl") as writer:
+                    summary_df.to_excel(writer, sheet_name="Gabaasa_Hanga_Ammaa", index=False)
+                st.download_button(
+                    label="📥 Gabaasa Hanga Ammaa Print / Excel",
+                    data=buffer_d.getvalue(),
+                    file_name="Gabaasa_Hanga_Ammaatti.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                )
+            else:
+                st.info("Deetaan hin jiru.")
+
+        with tabE:
+            st.markdown(f"### E. Gabaasa Barattoota Miidhama Qaamaa Qabanii - {school_display}")
+            if not db.empty:
+                disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
+                if not disabled_df.empty:
+                    st.dataframe(disabled_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Gosa Miidhamaa"]], use_container_width=True)
+
+                    buffer_e = io.BytesIO()
+                    with pd.ExcelWriter(buffer_e, engine="openpyxl") as writer:
+                        disabled_df.to_excel(writer, sheet_name="Miidhama_Qaamaa", index=False)
+                    st.download_button(
+                        label="📥 Barattoota Miidhama Qaamaa Print / Excel",
+                        data=buffer_e.getvalue(),
+                        file_name="Barattoota_Miidhama_Qaamaa.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
+
+        with tabF:
+            st.markdown(f"### F. Gabaasa Lakkoofsaa Miidhama Qaamaa (Kutaa 1 - 8 fi Waliigalaa) - {school_display}")
+            if not db.empty:
+                disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
+                if not disabled_df.empty:
+                    pivot_data = []
+                    disabilities = disabled_df["Gosa Miidhamaa"].unique()
+                    for dis in disabilities:
+                        row = {"Gosa Miidhamaa": dis}
+                        sub_dis = disabled_df[disabled_df["Gosa Miidhamaa"] == dis]
+
+                        d_1_6 = 0
+                        dh_1_6 = 0
+                        d_7_8 = 0
+                        dh_7_8 = 0
+
+                        for k in range(1, 13):
+                            k_str = str(k)
+                            sub_k = sub_dis[sub_dis["Kutaa"] == k_str]
+                            cnt = len(sub_k)
+                            row[f"Kutaa {k}"] = cnt
+
+                            if k <= 6:
+                                d_1_6 += len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                                dh_1_6 += len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                            elif 7 <= k <= 8:
+                                d_7_8 += len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                                dh_7_8 += len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+
+                        row["Ida'ama 1-6"] = d_1_6 + dh_1_6
+                        row["Ida'ama 7-8"] = d_7_8 + dh_7_8
+                        row["Ida'ama Waliigalaa"] = sum(row.get(f"Kutaa {k}", 0) for k in range(1, 13))
+                        pivot_data.append(row)
+
+                    dis_summary_df = pd.DataFrame(pivot_data)
+                    st.dataframe(dis_summary_df, use_container_width=True)
+
+                    buffer_f = io.BytesIO()
+                    with pd.ExcelWriter(buffer_f, engine="openpyxl") as writer:
+                        dis_summary_df.to_excel(writer, sheet_name="Lakkoofsa_Miidhamaa", index=False)
+                    st.download_button(
+                        label="📥 Lakkoofsa Miidhamaa Print / Excel",
+                        data=buffer_f.getvalue(),
+                        file_name="Lakkoofsa_Gosa_Miidhamaa.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
+
+        with tabG:
+            st.markdown(f"### G. Gabaasa Barattoota Irra Deebi'anii (Repeat Table) - {school_display}")
+            if not db.empty:
+                repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
+                if not repeat_df.empty:
+                    display_repeat_df = repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Umurii", "Haala Galmee", "Bara Addaan Kute"]].copy()
+                    display_repeat_df.columns = ["Maqaa Guutuu", "Saala", "Kutaa", "Umurii", "Haala Irra Deebii", "Bara Irra Deebii"]
+                    st.dataframe(display_repeat_df, use_container_width=True)
+
+                    buffer_g = io.BytesIO()
+                    with pd.ExcelWriter(buffer_g, engine="openpyxl") as writer:
+                        display_repeat_df.to_excel(writer, sheet_name="Irra_Deebii", index=False)
+                    st.download_button(
+                        label="📥 Barattoota Irra Deebii Print / Excel",
+                        data=buffer_g.getvalue(),
+                        file_name="Barattoota_Irra_Deebii.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Barataan irra deebii galmaa'e hin jiru.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
+
+        with tabH:
+            st.markdown(f"### H. Gabaasa Lakkoofsaa Irra Deebii (Tartiiba Kutaatiin) - {school_display}")
+            if not db.empty:
+                repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
+                if not repeat_df.empty:
+                    raw_rep = []
+                    for k in range(1, 13):
+                        sub_k = repeat_df[repeat_df["Kutaa"] == str(k)]
+                        d_c = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                        dh_c = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                        raw_rep.append({
+                            "Kutaa_Num": str(k),
+                            "Kutaa": f"Kutaa {k}",
+                            "Dhiira": d_c,
+                            "Dhalaa": dh_c,
+                            "Ida'ama": d_c + dh_c
+                        })
+                    grouped_rep_df = generate_grouped_report(raw_rep, title_col_name="Kutaa")
+                    st.dataframe(grouped_rep_df, use_container_width=True)
+
+                    buffer_h = io.BytesIO()
+                    with pd.ExcelWriter(buffer_h, engine="openpyxl") as writer:
+                        grouped_rep_df.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
+                    st.download_button(
+                        label="📥 Lakkoofsa Irra Deebii Print / Excel",
+                        data=buffer_h.getvalue(),
+                        file_name="Lakkoofsa_Irra_Deebii.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.info("Barataan irra deebii galmaa'e hin jiru.")
+            else:
+                st.info("Deetaan waligalaa hin jiru.")
+
+        with tabI:
+            st.markdown(f"### I. Gabaasa Waligalaa (Karoora vs Raawwii - Tartiiba Kutaatiin) - {school_display}")
+            perf_raw = []
+            for k in range(1, 13):
+                t_d = st.session_state.targets[str(k)]["Dhiira"]
+                t_dh = st.session_state.targets[str(k)]["Dhalaa"]
+                sub_k = db[db["Kutaa"] == str(k)] if not db.empty else pd.DataFrame()
+                r_d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"]) if not sub_k.empty else 0
+                r_dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"]) if not sub_k.empty else 0
+                r_tot = r_d + r_dh
+
+                p_d = round((r_d / t_d * 100), 1) if t_d > 0 else 0.0
+                p_dh = round((r_dh / t_dh * 100), 1) if t_dh > 0 else 0.0
+                t_tot = t_d + t_dh
+                p_tot = round((r_tot / t_tot * 100), 1) if t_tot > 0 else 0.0
+
+                perf_raw.append({
+                    "Kutaa_Num": str(k),
+                    "Kutaa": f"Kutaa {k}",
+                    "Karoora Dhiira": t_d,
+                    "Karoora Dhalaa": t_dh,
+                    "Karoora Ida'ama": t_tot,
+                    "Raawwii Dhiira": r_d,
+                    "Raawwii Dhalaa": r_dh,
+                    "Raawwii Ida'ama": r_tot,
+                    "Raawwii Dhiira %": f"{p_d}%",
+                    "Raawwii Dhalaa %": f"{p_dh}%",
+                    "Raawwii Ida'ama %": f"{p_tot}%"
+                })
+
+            perf_df = pd.DataFrame(perf_raw)
+            st.dataframe(perf_df, use_container_width+True)
+
+            buffer_i = io.BytesIO()
+            with pd.ExcelWriter(buffer_i, engine="openpyxl") as writer:
+                perf_df.to_excel(writer, sheet_name="Karoora_vs_Raawwii", index=False)
+            st.download_button(
+                label="📥 Karoora vs Raawwii Print / Excel",
+                data=buffer_i.getvalue(),
+                file_name="Karoora_vs_Raawwii.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+
+        with tabJ:
+            st.markdown(f"### J. Jijjiiruu (Edit) ykn Haquu (Delete) Barataa - {school_display}")
+            if not db.empty:
+                student_to_edit = st.selectbox("Barataa Jijjiiruf/Haquuf Maqaa Filadhu", db["Maqaa Guutuu"].tolist())
+                st_row = db[db["Maqaa Guutuu"] == student_to_edit].iloc[0]
+
+                col_e1, col_e2 = st.columns(2)
+                with col_e1:
+                    new_name = st.text_input("Maqaa Guutuu Haaraa", value=st_row["Maqaa Guutuu"])
+                    new_kutaa = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(st_row["Kutaa"]) - 1)
+                with col_e2:
+                    new_status = st.selectbox("Haala Galmee", ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"], index=0)
+
+                col_btn1, col_btn2 = st.columns(2)
+                with col_btn1:
+                    if st.button("🔄 Data Update Gochuu"):
+                        st.session_state.students_db.loc[st.session_state.students_db["Maqaa Guutuu"] == student_to_edit, "Maqaa Guutuu"] = new_name
+                        st.session_state.students_db.loc[st.session_state.students_db["Maqaa Guutuu"] == new_name, "Kutaa"] = new_kutaa
+                        st.success("Data barataa milkaa'inaan haaromfameera!")
+                with col_btn2:
+                    if st.button("🗑️ Barataa Haquu (Delete)", type="primary"):
+                        st.session_state.students_db = st.session_state.students_db[st.session_state.students_db["Maqaa Guutuu"] != student_to_edit]
+                        st.success("Barataan kun galmeerraa haqameera!")
+            else:
+                st.info("Deetaan galmaa'e hin jiru.")
+    else:
+        st.warning("Maaloo Password sirrii galchi!")
