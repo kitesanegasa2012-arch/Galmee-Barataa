@@ -696,6 +696,7 @@ else:
                         st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
                 else:
                     st.info("Deetaan waligalaa hin jiru.")
+
             with tabG:
                 st.markdown(f"### G. Gabaasa Barattoota Irra Deebi'anii - {school_display}")
                 if not db.empty:
@@ -788,5 +789,5 @@ else:
                             st.warning(f"Barataan {selected_student} galmee keessaa haqameera!")
                             st.rerun()
                 else:
-                    st.info("Deetaan barataa galmaa'e hin jiru.")                                                data=buffer_f.getvalue(),
-                             
+                    st.info("Deetaan barataa galmaa'e hin jiru.")                                                   student_row = db[db["Maqaa Guutuu"] == selected_student].iloc[0]
+                     
