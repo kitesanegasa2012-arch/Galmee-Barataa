@@ -128,9 +128,28 @@ if menu == "1. Cover Page":
       )
 
 # ----------------- 2. DASHBOARD GALMEE BARATTOOTAA (FOOMII) -----------------
-elif menu == "2. Dashboard Galmee Barataa (Foomii)":
-  st.subheader("📝 Foomii Galmee Barattootaa Haaraa")
+elif menu == "2. Dashboard Galmee Barataa (Foormii)":
+        st.subheader("📝 Foomii Galmee Barattootaa Haaraa")
 
+        with st.form("school_name_form"):
+            st.markdown("### Maqaa Mana Barumsaa Galmeessaa")
+            input_school = st.text_input(
+                "Maqaa Mana Barumsaa",
+                value=st.session_state.school_name,
+                placeholder="Fkn: M/B Sadarkaa 2ffaa Kitesa Negasa",
+            )
+            save_school_btn = st.form_submit_button("🏫 Maqaa Mana Barumsaa Save Gochuu")
+            if save_school_btn:
+                if input_school.strip():
+                    st.session_state.school_name = input_school.strip()
+                    st.success("Maqaa mana barumsaa milkaa'inaan save ta'eera!")
+                else:
+                    st.warning("Maaloo maqaa mana barumsaa galchi!")
+
+        if st.session_state.school_name:
+            st.info(f"📌 Mana Barumsaa Galmaa'e: **{st.session_state.school_name}**")
+        else:
+            st.warning("⚠️ Jalqaba maqaa mana barumsaa oliitti save godhaa!")
   with st.form("registration_form"):
     col1, col2 = st.columns(2)
 
