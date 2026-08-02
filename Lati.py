@@ -168,9 +168,8 @@ if not st.session_state.authenticated:
             if submit_login:
                 if input_email in AUTHORIZED_USERS and AUTHORIZED_USERS[input_email] == input_password:
                     st.session_state.authenticated = True
-                    st.session_state.current_user = input_email  # Eenyu akka seene qabachuuf
+                    st.session_state.current_user = input_email
                     
-                    # Audit Trail (Login History) database gaatti dabaluu
                     login_record = {
                         "Gmail": input_email,
                         "Guyyaa/Saatii": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -533,7 +532,14 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             if not db.empty:
                 disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
                 if not disabled_df.empty:
-                    st.info("Lakkoofsi gosa miidhamaa qindaa'eera.")
+                    disabled_counts = []
+                    for k in range(1, 13):
+                        sub_k = disabled_df[disabled_df["Kutaa"] == str(k)]
+                        d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                        dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                        disabled_counts.append({"Kutaa_Num": str(k), "Kutaa": f"Kutaa {k}", "Dhiira": d, "Dhalaa": dh, "Ida'ama": d + dh})
+                    dis_summary_df = generate_grouped_report(disabled_counts, title_col_name="Kutaa")
+                    st.dataframe(dis_summary_df, use_container_width=True)
 
         with tabG:
             st.markdown("### G. Barattoota Irra Deebii")
@@ -545,11 +551,42 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
         with tabH:
             st.markdown("### H. Lakkoofsa Irra Deebii Tartiiba Kutaatiin")
             if not db.empty:
-                st.info("Gabaasni lakkoofsa irra deebii qindaa'eera.")
+                repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
+                repeat_counts = []
+                for k in range(1, 13):
+                    sub_k = repeat_df[repeat_df["Kutaa"] == str(k)]
+                    d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                    dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                    repeat_counts.append({"Kutaa_Num": str(k), "Kutaa": f"Kutaa {k}", "Dhiira": d, "Dhalaa": dh, "Ida'ama": d + dh})
+                rep_summary_df = generate_grouped_report(repeat_counts, title_col_name="Kutaa")
+                st.dataframe(rep_summary_df, use_container_width=True)
 
         with tabI:
-            st.markdown("### I. Karoora vs Raawwii")
-            st.info("Wal bira qabxii karooraa fi raawwii.")
+            st.markdown("### I. Karoora vs Raawwii (Walbira Qabxii)")
+            if not db.empty:
+                comparison_rows = []
+                for k in range(1, 13):
+                    k_str = str(k)
+                    t_d = st.session_state.targets[k_str]["Dhiira"]
+                    t_dh = st.session_state.targets[k_str]["Dhalaa"]
+                    t_total = t_d + t_dh
+                    
+                    sub_k = db[db["Kutaa"] == k_str]
+                    r_d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                    r_dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                    r_total = r_d + r_dh
+                    
+                    diff = r_total - t_total
+                    comparison_rows.append({
+                        "Kutaa": f"Kutaa {k}",
+                        "Karoora (Ida'ama)": t_total,
+                        "Raawwii (Ida'ama)": r_total,
+                        "Garagaraummaa (Diff)": diff
+                    })
+                comp_df = pd.DataFrame(comparison_rows)
+                st.dataframe(comp_df, use_container_width=True)
+            else:
+                st.info("Deetaan barattootaa hanga ammaa galmaa'e hin jiru.")
 
         with tabJ:
             st.markdown("### J. Edit / Delete Barattoota")
