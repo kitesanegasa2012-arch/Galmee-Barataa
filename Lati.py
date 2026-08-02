@@ -462,8 +462,6 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
         db = st.session_state.students_db
 
-       db = st.session_state.students_db
-
         with tabA:
             st.markdown("### A. Guca Karoora Galmee Barataa (Dhiira, Dhalaa, Ida'ama)")
             with st.form("target_form"):
@@ -712,7 +710,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                     st.download_button(
                         label="📥 Lakkoofsa Irra Deebii Print / Excel",
                         data=buffer_h.getvalue(),
-                        file_name="Lakkoofsa_Irra_Deebii.xlsx",
+                        file_name="Lakkoofsa_Barattoota_Irra_Deebii.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     )
                 else:
@@ -721,80 +719,61 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 st.info("Deetaan waligalaa hin jiru.")
 
         with tabI:
-            st.markdown("### I. Gabaasa Waligalaa (Karoora vs Raawwii - Tartiiba Kutaatiin)")
-            perf_raw = []
-            for k in range(1, 13):
-                t_d = st.session_state.targets[str(k)]["Dhiira"]
-                t_dh = st.session_state.targets[str(k)]["Dhalaa"]
-                sub_k = db[db["Kutaa"] == str(k)] if not db.empty else pd.DataFrame()
-                r_d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"]) if not sub_k.empty else 0
-                r_dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"]) if not sub_k.empty else 0
-                r_tot = r_d + r_dh
-                
-                p_d = round((r_d / t_d * 100), 1) if t_d > 0 else 0.0
-                p_dh = round((r_dh / t_dh * 100), 1) if t_dh > 0 else 0.0
-                t_tot = t_d + t_dh
-                p_tot = round((r_tot / t_tot * 100), 1) if t_tot > 0 else 0.0
+            st.markdown("### I. Karoora vs Raawwii (Comparison)")
+            if not db.empty:
+                comparison_data = []
+                for k in range(1, 13):
+                    k_str = str(k)
+                    # Target
+                    t_d = st.session_state.targets[k_str]["Dhiira"]
+                    t_dh = st.session_state.targets[k_str]["Dhalaa"]
+                    t_tot = t_d + t_dh
 
-                perf_raw.append({
-                    "Kutaa_Num": str(k),
-                    "Kutaa": f"Kutaa {k}",
-                    "Karoora Dhiira": t_d,
-                    "Karoora Dhalaa": t_dh,
-                    "Karoora Ida'ama": t_tot,
-                    "Raawwii Dhiira": r_d,
-                    "Raawwii Dhalaa": r_dh,
-                    "Raawwii Ida'ama": r_tot,
-                    "Raawwii Dhiira %": f"{p_d}%",
-                    "Raawwii Dhalaa %": f"{p_dh}%",
-                    "Raawwii Ida'ama %": f"{p_tot}%"
-                })
-            
-            perf_df = pd.DataFrame(perf_raw)
-            st.dataframe(perf_df, use_container_width=True)
+                    # Actual from DB
+                    sub_k = db[db["Kutaa"] == k_str]
+                    a_d = len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
+                    a_dh = len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
+                    a_tot = a_d + a_dh
 
-            buffer_i = io.BytesIO()
-            with pd.ExcelWriter(buffer_i, engine="openpyxl") as writer:
-                perf_df.to_excel(writer, sheet_name="Karoora_vs_Raawwii", index=False)
-            st.download_button(
-                label="📥 Karoora vs Raawwii Print / Excel",
-                data=buffer_i.getvalue(),
-                file_name="Karoora_vs_Raawwii.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
+                    comparison_data.append({
+                        "Kutaa": f"Kutaa {k}",
+                        "Karoora Dhiira": t_d,
+                        "Galmaaye Dhiira": a_d,
+                        "Karoora Dhalaa": t_dh,
+                        "Galmaaye Dhalaa": a_dh,
+                        "Karoora Ida'ama": t_tot,
+                        "Galmaaye Ida'ama": a_tot,
+                    })
+                comp_df = pd.DataFrame(comparison_data)
+                st.dataframe(comp_df, use_container_width=True)
+            else:
+                st.info("Deetaan galmaa'e hin jiru.")
 
         with tabJ:
-            st.markdown("### J. Jijjiiruu (Edit) ykn Haquu (Delete) Barataa")
+            st.markdown("### J. Barattoota Gulaaluu (Edit) ykn Haquu (Delete)")
             if not db.empty:
-                student_to_edit = st.selectbox("Barataa Jijjiiruf/Haquuf Maqaa Filadhu", db["Maqaa Guutuu"].tolist())
-                st_row = db[db["Maqaa Guutuu"] == student_to_edit].iloc[0]
-                
-                col_e1, col_e2 = st.columns(2)
-                with col_e1:
-                    new_name = st.text_input("Maqaa Guutuu Haaraa", value=st_row["Maqaa Guutuu"])
-                    new_kutaa = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(st_row["Kutaa"])-1)
-                with col_e2:
-                    new_status = st.selectbox("Haala Galmee", ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"], index=0)
-                
-                col_btn1, col_btn2 = st.columns(2)
-                with col_btn1:
-                    if st.button("🔄 Data Update Gochuu"):
-                        st.session_state.students_db.loc[st.session_state.students_db["Maqaa Guutuu"] == student_to_edit, "Maqaa Guutuu"] = new_name
-                        st.session_state.students_db.loc[st.session_state.students_db["Maqaa Guutuu"] == new_name, "Kutaa"] = new_kutaa
-                        st.success("Data barataa milkaa'inaan haaromfameera!")
-                with col_btn2:
-                    if st.button("🗑️ Barataa Haquu (Delete)", type="primary"):
-                        st.session_state.students_db = st.session_state.students_db[st.session_state.students_db["Maqaa Guutuu"] != student_to_edit]
-                        st.success("Barataan milkaa'inaan haqameera!")
-                        st.rerun()
+                search_name = st.text_input("Maqaa Barataa Barbaadi (Search by Name)")
+                if search_name:
+                    filtered_db = db[db["Maqaa Guutuu"].str.contains(search_name, case=False, na=False)]
+                else:
+                    filtered_db = db
 
-# ----------------- 4. SEENAA SEENSAA (LOGIN HISTORY / AUDIT) -----------------
-elif menu == "4. Seenaa Seensaa (Login History / Audit)":
-    st.subheader("📜 Seenaa Seensa Appii (Login Audit Trail)")
-    st.markdown("Namoonni appii kana keessatti milkaa'inaan seensan asitti galmeeffamanii jiru:")
-    
-    if st.session_state.login_history:
-        history_df = pd.DataFrame(st.session_state.login_history)
-        st.dataframe(history_df, use_container_width=True)
+                if not filtered_db.empty:
+                    selected_idx = st.selectbox(
+                        "Barataa Gulaaluuf ykn Haquuf Filadhu:",
+                        filtered_db.index.tolist(),
+                        format_func=lambda x: f"{db.loc[x, 'Maqaa Guutuu']} (Kutaa {db.loc[x, 'Kutaa']})"
+                    )
+
+                    col_j1, col_j2 = st.columns(2)
+                    with col_j1:
+                        if st.button("🗑️ Barataa Kana Haqi (Delete)"):
+                            st.session_state.students_db = db.drop(selected_idx).reset_index(drop=True)
+                            st.success("Barataan milkaa'inaan haqameera!")
+                            st.rerun()
+                else:
+                    st.warning("Barataan argame hin jiru.")
+            else:
+                st.info("Deetaan galmaa'e hin jiru.")
     else:
-        st.info("Seenaan seensaa hanga ammaa hin jiru.")
+        st.error("Password sirrii miti!")
