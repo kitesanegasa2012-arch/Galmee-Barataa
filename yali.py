@@ -1,4 +1,3 @@
-sirreeffame · PY
 from datetime import datetime
 import io
 import sqlite3
