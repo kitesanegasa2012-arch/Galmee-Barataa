@@ -496,7 +496,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
 
     saved_school_name = get_setting("saved_school_name", "")
 
-    st.markdown("### 🏫 Galmee Maqaa Mana Barumsaa ")
+    st.markdown("### 🏫 Maqaa Mana Barumsaa ")
     school_input_col1, school_input_col2 = st.columns([3, 1])
     with school_input_col1:
         current_school_name = st.text_input("Maqaa Mana Barumsaa galmeessaa jiruu galchaa (Save akka ta'uuf)", value=saved_school_name)
