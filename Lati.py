@@ -53,7 +53,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Session State Initialization for Database & Targets
+# Session State Initialization for Authentication, Database, & Targets
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
 if "students_db" not in st.session_state:
     st.session_state.students_db = pd.DataFrame(
         columns=[
@@ -86,6 +89,10 @@ if "targets" not in st.session_state:
     st.session_state.targets = {
         str(i): {"Dhiira": 0, "Dhalaa": 0} for i in range(1, 13)
     }
+
+# Track previously entered school name for automation rules
+if "saved_school_name" not in st.session_state:
+    st.session_state.saved_school_name = ""
 
 def get_last_location(db, col_name):
     if not db.empty and col_name in db.columns and len(db[col_name].dropna()) > 0:
@@ -127,6 +134,41 @@ def generate_grouped_report(data_rows, title_col_name="Kutaa"):
 
     return pd.DataFrame(final_table)
 
+# ----------------- LOGIN SCREEN CHECK -----------------
+if not st.session_state.authenticated:
+    st.markdown(
+        """
+        <div class="cover-card" style="max-width: 500px; margin: 50px auto;">
+            <h2>🔐 Seensa Eeyyamaa (Login System)</h2>
+            <p>App kana fayyadamuuf Gmail fi Password keessan galchuun dirqama.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        with st.form("login_form"):
+            input_email = st.text_input("Gmail")
+            input_password = st.text_input("Password", type="password")
+            submit_login = st.form_submit_button("Seeni (Login)")
+            
+            if submit_login:
+                # Authorized credentials check matching your details
+                if input_email.strip() == "kitesanegasa2012@gmail.com" and (input_password == "kitesanegasa2012password" or input_password == "kitesa2019" or input_password == "admin123"):
+                    st.session_state.authenticated = True
+                    st.success("Galmooftaniittu! Appiin dhiyaateera.")
+                    st.rerun()
+                else:
+                    st.error("Gmail ykn Password dogoggora! Maaloo irra deebi'aa ilaalaa.")
+        
+        st.markdown("---")
+        st.markdown("### 📌 Toora Odeeffannoo Qunnamtii")
+        st.markdown("**Lakk Bilbilaa & Telegram:** +251969184005 / 910927936")
+        st.markdown("**Gmail:** kitesanegasa2012@gmail.com")
+    
+    st.stop()
+
 # ----------------- NAVIGATION / PAGES -----------------
 st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
 menu = st.sidebar.selectbox(
@@ -135,8 +177,13 @@ menu = st.sidebar.selectbox(
         "1. Cover Page",
         "2. Dashboard Galmee Barataa (Foomii)",
         "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
+        "4. Baasii (Logout)",
     ],
 )
+
+if menu == "4. Baasii (Logout)":
+    st.session_state.authenticated = False
+    st.rerun()
 
 # ----------------- 1. COVER PAGE -----------------
 if menu == "1. Cover Page":
@@ -178,6 +225,22 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
     default_godina = get_last_location(db_existing, "Godina")
     default_aanaa = get_last_location(db_existing, "Aanaa")
     default_ganda = get_last_location(db_existing, "Ganda")
+
+    # Step 2 requirement: Maqaa mana barumsaa save gochuu daandii jalqabaa irratti
+    st.markdown("### 🏫 Galmee Maqaa Mana Barumsaa")
+    school_input_col1, school_input_col2 = st.columns([3, 1])
+    with school_input_col1:
+        current_school_name = st.text_input("Maqaa Mana Barumsaa Kanaa (Save akka ta'uuf)", value=st.session_state.saved_school_name)
+    with school_input_col2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("Save School Name"):
+            if current_school_name.strip():
+                st.session_state.saved_school_name = current_school_name.strip()
+                st.success("Maqaan mana barumsaa milkaa'inaan save ta'eera!")
+            else:
+                st.warning("Maaloo maqaa mana barumsaa galchaa.")
+
+    st.markdown("---")
 
     with st.form("registration_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
@@ -246,7 +309,20 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             fan_id = st.text_input("11. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID - Digiti 16)")
             lakk_bilbila_barataa = st.text_input("12. Lakkoofsa Bilbila Barataa (+251...)")
             lakk_bilbila_maatii = st.text_input("13. Lakkoofsa Bilbila Maatii (+251...)")
-            mb_duraan = st.text_input("14. Mana Barumsaa Duraan Itti Barachaa Ture")
+            
+            # --- RULES 3 & 4 IMPLEMENTATION FOR PREVIOUS SCHOOL FIELD ---
+            st.markdown("---")
+            st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
+            school_mode = st.radio("Filannoo Mana Barumsaa:", ["Mana Barumsaa Duraan itti barachaa ture", "Mana barumsaa biroo"])
+            
+            if school_mode == "Mana Barumsaa Duraan itti barachaa ture":
+                # Rule 3: Automatically use the saved school name
+                auto_school = st.session_state.saved_school_name if st.session_state.saved_school_name else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
+                st.info(f"Maqaa Mana Barumsaa Save ta'ee jiru: **{auto_school}**")
+                mb_duraan = auto_school
+            else:
+                # Rule 4: Allow free manual input if "Mana barumsaa biroo" is chosen
+                mb_duraan = st.text_input("Maqaa Mana Barumsaa Biroo (Barataan barreesuu danda'a)")
 
             avireejjii = st.number_input(
                 "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
@@ -259,7 +335,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
         submitted = st.form_submit_button("💾 Save (Enter)")
 
         if submitted:
-            # Validation Checks
             error_msgs = []
 
             if not maqaa_guutuu:
@@ -267,33 +342,20 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
             if koorniyaa == "Filadhu":
                 error_msgs.append("Maaloo Koorniyaa barataa filadhu!")
 
-            # Mana Barumsaa Biroo validation
-            if mb_duraan.strip() and haala_galmee != "Mana Barumsaa Biroo":
-                error_msgs.append('Halluu diimaan: Mana Barumsaa Duraan Itti Barachaa Ture yoo guutame, Haala Galmee jalatti "Mana Barumsaa Biroo" wajjin walsimuu qaba!')
-            elif not mb_duraan.strip() and haala_galmee == "Mana Barumsaa Biroo":
-                error_msgs.append('Halluu diimaan: Haala Galmee "Mana Barumsaa Biroo" yoo taate, Mana Barumsaa Duraan Itti Barachaa Ture guutuun dirqama!')
-
-            # Average & Fail validation
             if avireejjii < 50 and haala_galmee != "Irra deebii (Kufe)":
                 error_msgs.append('Halluu diimaan: Barataan avireejjii 50 gadi fide haala galmeen "Irra deebii (Kufe)" jedhuun walsimuu qaba!')
 
-            # FAN ID validation (16 digits)
             clean_fan = fan_id.strip()
             if clean_fan and (not clean_fan.isdigit() or len(clean_fan) != 16):
-                error_msgs.append("FAN ID dijiitii 16 qofa ta'uu qaba! (16 gadi ykn ol ta'uu hin danda'u)")
+                error_msgs.append("FAN ID dijiitii 16 qofa ta'uu qaba!")
 
-            # Phone validation (+251 and 9 digits)
             def validate_phone(phone_str, field_label):
                 p = phone_str.strip()
                 if not p.startswith("+251"):
                     return f"{field_label}: Lakkoofsi bilbilaa '+251' tiin jalqabuu qaba!"
                 subscriber_part = p[4:]
-                if len(subscriber_part) < 9:
-                    return f"{field_label}: Lakk. ni hanqata (dijiitii 9 guutuu qaba)."
-                elif len(subscriber_part) > 9:
-                    return f"{field_label}: Irra darbe (dijiitii 9 qofa ta'uu qaba)."
-                elif not subscriber_part.isdigit():
-                    return f"{field_label}: Koodii biyyaa itti aansuun lakkoofsi jiru dijiitii qofa ta'uu qaba."
+                if len(subscriber_part) != 9 or not subscriber_part.isdigit():
+                    return f"{field_label}: Koodii biyyaa itti aansuun lakkoofsi jiru dijiitii 9 qofa ta'uu qaba."
                 return None
 
             if lakk_bilbila_barataa.strip():
@@ -308,7 +370,6 @@ elif menu == "2. Dashboard Galmee Barataa (Foomii)":
                 for err in error_msgs:
                     st.markdown(f'<p style="color:red; font-weight:bold;">⚠️ {err}</p>', unsafe_allow_html=True)
             else:
-                existing_df = st.session_state.students_db
                 new_data = {
                     "Maqaa Guutuu": maqaa_guutuu,
                     "Koorniyaa": koorniyaa,
@@ -345,7 +406,7 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
 
     password = st.text_input("Password Galchi", type="password")
 
-    if password == "kitesa2019" or password == "admin123":
+    if password == "kitesanegasa2012password" or password == "kitesa2019" or password == "admin123":
         st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa.")
 
         tabA, tabB, tabC, tabD, tabE, tabF, tabG, tabH, tabI, tabJ = st.tabs(
@@ -514,20 +575,13 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
             if not db.empty:
                 disabled_df = db[db["Miidhama Qaamaa"] == "Jira"]
                 if not disabled_df.empty:
-                    # Creating a pivot table for disabled students by grade and disability type
-                    grades_list = [str(i) for i in range(1, 13)]
                     pivot_data = []
-                    
                     disabilities = disabled_df["Gosa Miidhamaa"].unique()
                     for dis in disabilities:
                         row = {"Gosa Miidhamaa": dis}
                         sub_dis = disabled_df[disabled_df["Gosa Miidhamaa"] == dis]
                         
-                        d_1_6 = 0
-                        dh_1_6 = 0
-                        d_7_8 = 0
-                        dh_7_8 = 0
-                        
+                        d_1_6, dh_1_6, d_7_8, dh_7_8 = 0, 0, 0, 0
                         for k in range(1, 13):
                             k_str = str(k)
                             sub_k = sub_dis[sub_dis["Kutaa"] == k_str]
@@ -685,8 +739,9 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 with col_btn2:
                     if st.button("🗑️ Barataa Haquu (Delete)", type="primary"):
                         st.session_state.students_db = st.session_state.students_db[st.session_state.students_db["Maqaa Guutuu"] != student_to_edit]
-                        st.success("Barataan kun galmeerraa haqameera!")
+                        st.success("Barataan milkaa'inaan haqameera!")
+                        st.rerun()
             else:
-                st.info("Deetaan galmaa'e hin jiru.")
+                st.info("Deetaan hin jiru.")
     else:
-        st.warning("Maaloo Password sirrii galchi!")
+        st.error("Password sirrii miti!")
