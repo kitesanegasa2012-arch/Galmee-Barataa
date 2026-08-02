@@ -425,7 +425,7 @@ menu = st.sidebar.selectbox(
     [
         "1. Cover Page",
         "2. Dashboard Galmee Barataa (Foomii)",
-        "3. Dashboard Barsiisaa /Gabaasaa (Password Needed)",
+        "3. Dashboard Barsiisaa/Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
         "5. Seenaa Seensaa (Login History / Audit)",
         "6. Baasi (Logout)",
@@ -445,7 +445,7 @@ if menu == "1. Cover Page":
             <div style="font-size:60px;">🎓</div>
             <h1>APP SIRNA GALMEE BARATTOOTAA(STUDENT REGESTRATION SYSTEM)</h1>
             <div class="cover-divider"></div>
-            <h3>Baga  Gara App Sirna Galmee Barattootaa Kanatti Nagaan Dhuftan!</h3>
+            <h3>Baga  Nagaan Gara App Sirna Galmee Barattootaa Kitesa Nagasaatiin Kalaqameetti Dhuftan!</h3>
             <p style="font-size:16px; opacity:0.92;">Sirni kun odeeffannoo barattootaa galmeessuuf, gabaasa qindeessuu fi Ragaa barattootaa hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
