@@ -590,7 +590,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 ]
             )
 
-        with col2:
+      with col2:
                 st.markdown("**9. Bakka Dhalootaa** _(galmee dabre irraa ofumaan bahe)_")
                 godina = st.text_input("Godina", value=default_godina)
                 aanaa = st.text_input("Aanaa", value=default_aanaa)
@@ -613,12 +613,12 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     value=st.session_state.form_p_maatii,
                 )
                 st.markdown("---")
-              st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
+                st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
+
                 if haala_galmee not in [
                     "Mana Barumsaa Biroo",
                     "Irra deebii Mana Barumsaa Biroo",
                 ]:
-                    # Yoo saved_school_name hin jirre ta'e, akka namni itti galchu text input bana
                     saved_name = st.session_state.get("saved_school_name", "")
                     if saved_name:
                         st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{saved_name}**")
@@ -626,13 +626,14 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     else:
                         mb_duraan = st.text_input(
                             "Maqaa Mana Barumsaa (Dursee kan barachaa ture)",
-                           value=st.session_state.form_mb_biroo,
+                            value=st.session_state.get("form_mb_biroo", ""),
                         )
                 else:
                     mb_duraan = st.text_input(
                         "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
                         value=st.session_state.get("form_mb_biroo", ""),
                     )
+
                 avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                     min_value=0.0,
@@ -642,7 +643,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 barsiisaa = st.text_input("16. Barsiisaa Galmeessee", value=default_barsiisaa)
                 guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C)", value=default_guyyaa)
 
-        submitted = st.form_submit_button("💾 Save (Enter)")
+            submitted = st.form_submit_button("💾 Save (Enter)")
         if submitted:
             st.session_state.form_maqaa = maqaa_guutuu
             st.session_state.form_fan = fan_id
