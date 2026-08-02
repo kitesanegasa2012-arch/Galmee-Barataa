@@ -424,7 +424,7 @@ menu = st.sidebar.selectbox(
     "Filannoo Baafataa (Navigation)",
     [
         "1. Cover Page",
-        "2. Dashboard Galmee Barataa (Foormii)",
+        "2. Kutaa Galmee Barataa (Foormii)",
         "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
         "5. Seenaa Seensaa (Login History / Audit)",
@@ -482,7 +482,7 @@ if menu == "1. Cover Page":
     st.markdown(CONTACT_INFO_HTML, unsafe_allow_html=True)
 
 # ----------------- 2. DASHBOARD GALMEE BARATTOOTAA (FOOMII) -----------------
-elif menu == "2. Dashboard Galmee Barataa (Foormii)":
+elif menu == "2. Kutaa Galmee Barataa (Foormii)":
     st.subheader("📝 Foormii Galmee Barattootaa")
 
     db_existing = load_students()
