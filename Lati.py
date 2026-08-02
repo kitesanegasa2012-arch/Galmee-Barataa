@@ -606,37 +606,33 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
 
             st.markdown("---")
             st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
-
             # FIX #4: Tab 14 kun amma "Haala Galmee" (armaan olitti filatame)
             # irratti hundaa'ee ofumaan jijjiirama - radio button dabre hin
             # barbaachisu.
-         if haala_galmee != "Mana Barumsaa Biroo":
-
-                auto_school = saved_school_name if saved_school_name else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
-
-                st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
-
-                mb_duraan = auto_school
-
-            else:
-
-                mb_duraan = st.text_input(
-
-                    "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-
-                    value=st.session_state.form_mb_biroo,
+        if haala_galmee not in [
+                    "Mana Barumsaa Biroo",
+                    "Irra deebii Mana Barumsaa Biroo",
+                ]:
+                 auto_school = (
+                        st.session_state.saved_school_name
+                        if st.session_state.saved_school_name
+                        else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
+                    )
+                    st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
+                    mb_duraan = auto_school
+                else:
+                    mb_duraan = st.text_input(
+                        "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
+                        value=st.session_state.form_mb_biroo,
           )
-
             avireejjii = st.number_input(
                 "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                 min_value=0.0, max_value=100.0, value=75.0,
             )
-
             barsiisaa = st.text_input("16. Barsiisaa Galmeessee", value=default_barsiisaa)
             guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C)", value=default_guyyaa)
 
         submitted = st.form_submit_button("💾 Save (Enter)")
-
         if submitted:
             st.session_state.form_maqaa = maqaa_guutuu
             st.session_state.form_fan = fan_id
@@ -644,7 +640,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             st.session_state.form_p_maatii = lakk_bilbila_maatii
             st.session_state.form_haadhaa = maqaa_haadhaa
             st.session_state.form_mb_biroo = mb_duraan
-
             error_msgs = []
 
             if not maqaa_guutuu:
