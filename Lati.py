@@ -613,16 +613,27 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     value=st.session_state.form_p_maatii,
                 )
                 st.markdown("---")
-                st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
-              if haala_galmee != "Mana Barumsaa Biroo":
-                auto_school = saved_school_name if saved_school_name else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
-                st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
-                mb_duraan = auto_school
-            else:
-                mb_duraan = st.text_input(
-                    "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
+              st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
 
-                    value=st.session_state.form_mb_biroo,
+                if haala_galmee not in [
+                    "Mana Barumsaa Biroo",
+                    "Irra deebii Mana Barumsaa Biroo",
+                ]:
+                    # Yoo saved_school_name hin jirre ta'e, akka namni itti galchu text input bana
+                    saved_name = st.session_state.get("saved_school_name", "")
+                    if saved_name:
+                        st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{saved_name}**")
+                        mb_duraan = saved_name
+                    else:
+                        mb_duraan = st.text_input(
+                            "Maqaa Mana Barumsaa (Dursee kan barachaa ture)",
+                           value=st.session_state.form_mb_biroo,
+                        )
+                else:
+                    mb_duraan = st.text_input(
+                        "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
+                        value=st.session_state.get("form_mb_biroo", ""),
+                    )
                     )
                 avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
