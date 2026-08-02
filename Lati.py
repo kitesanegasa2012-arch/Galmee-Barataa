@@ -53,39 +53,22 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Lakkoofsa Eeyyamaa (Whitelist) - Namoota ati hayyamte qofa
+# Lakkoofsa Eeyyamaa (Whitelist)
 APPROVED_USERS = {
     "barsiisaa1@gmail.com": "keta1234",
     "barsiisaa2@gmail.com": "naga5678",
-    "kitesanegasa2012@gmail.com": "39323713K",  # Kun kan keeti
+    "kitesanegasa2012@gmail.com": "39323713K",
 }
 
-# Session State Initialization for Database, Targets, and School Name
+# Session State Initialization
 if "students_db" not in st.session_state:
     st.session_state.students_db = pd.DataFrame(
         columns=[
-            "Maqaa Guutuu",
-            "Koorniyaa",
-            "Kutaa",
-            "Daree (Section)",
-            "Bara Dhalootaa",
-            "Umurii",
-            "Haala Galmee",
-            "Bara Addaan Kute",
-            "Haala Maatii",
-            "Miidhama Qaamaa",
-            "Gosa Miidhamaa",
-            "Godina",
-            "Aanaa",
-            "Ganda",
-            "Maqaa Haadhaa/Guddistuu",
-            "FAN ID",
-            "Lakk Bilbila Barataa",
-            "Lakk Bilbila Maatii",
-            "M/B Duraan Itti Barachaa Ture",
-            "Avireejjii Qabxii",
-            "Guyyaa Galmee (E.C)",
-            "Barsiisaa Galmeessee",
+            "Maqaa Guutuu", "Koorniyaa", "Kutaa", "Daree (Section)", "Bara Dhalootaa",
+            "Umurii", "Haala Galmee", "Bara Addaan Kute", "Haala Maatii", "Miidhama Qaamaa",
+            "Gosa Miidhamaa", "Godina", "Aanaa", "Ganda", "Maqaa Haadhaa/Guddistuu",
+            "FAN ID", "Lakk Bilbila Barataa", "Lakk Bilbila Maatii", "M/B Duraan Itti Barachaa Ture",
+            "Avireejjii Qabxii", "Guyyaa Galmee (E.C)", "Barsiisaa Galmeessee"
         ]
     )
 
@@ -140,7 +123,7 @@ def generate_grouped_report(data_rows, title_col_name="Kutaa"):
     return pd.DataFrame(final_table)
 
 
-# ----------------- LOGIN SYSTEM (COVER PAGE 1 JALATTI) -----------------
+# ----------------- LOGIN SYSTEM -----------------
 st.sidebar.markdown("### 🏫 Kitesa Negasa")
 
 if "authenticated" not in st.session_state:
@@ -152,7 +135,7 @@ if not st.session_state.authenticated:
         <div class="cover-card">
             <h1>🎓 LATI APP </h1>
             <h3>Baga Nagaan Gara App Galmee Barattootaa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
-            <p>Sirni kun Adoolessa 2019 kan kalaqame ta'e odeeffannoo guutuu barattootaa galmeessuun, gabaasota addaa addaa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
+            <p>Sirni kun odeeffannoo guutuu barattootaa galmeessuun, gabaasota addaa addaa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -205,7 +188,7 @@ else:
         [
             "1. Fuula jalqabaa (Cover Page)",
             "2. Dashboard Galmee Barataa (Foormii)",
-            "3. Dashboard Gabaasa Qinda'ee (Password Needed)",
+            "3. Dashboard Gabaasa Qinda'ee",
         ],
     )
 
@@ -442,10 +425,11 @@ else:
                     )
                     st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
 
-    elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
-        st.subheader("🔐 Dashboard Barsiisaa (Seensa Eeyyamame)")
-
-        password = st.text_input("Password Galchi", type="password")
+    elif menu == "3. Dashboard Gabaasa Qinda'ee":
+        st.subheader("🔐 Dashboard Barsiisaa / Gabaasaa")
+        st.write("Maaloo gabaasota kana ilaaluuf Password galchaa.")
+        
+        password = st.text_input("Password Gabaasaa", type="password", key="dash_pass")
 
         if password == "kitesa2019" or password == "admin123":
             st.success("Seensa Milkaa'e! Gabaasotaa fi Karoora ilaaluu dandeessa.")
@@ -719,4 +703,4 @@ else:
                     else:
                         st.info("Barataan irra deebii galmaa'e hin jiru.")
                 else:
-                    st.info("Deetaan waligalaa hin jiru.")
+                    st.info("Deetaan waligalaa hin jiru.")              
