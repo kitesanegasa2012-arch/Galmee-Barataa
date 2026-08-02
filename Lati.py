@@ -424,15 +424,15 @@ menu = st.sidebar.selectbox(
     "Filannoo Baafataa (Navigation)",
     [
         "1. Cover Page",
-        "2. Dashboard Galmee Barataa (Foormii)",
-        "3. Dashboard Barsiisaa /kutaa Gabaasaa (Password Needed)",
+        "2. Dashboard Galmee Barataa (Foomii)",
+        "3. Dashboard Barsiisaa /Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
-        "5. Kuusaa Itti Fayyadamtoota (Login History / Audit)",
-        "6. Ba'i (Logout)",
+        "5. Seenaa Seensaa (Login History / Audit)",
+        "6. Baasi (Logout)",
     ],
 )
 
-if menu == "6. Ba'i (Logout)":
+if menu == "6. Baasi (Logout)":
     st.session_state.authenticated = False
     st.session_state.current_user = ""
     st.rerun()
