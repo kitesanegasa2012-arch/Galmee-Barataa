@@ -425,7 +425,7 @@ menu = st.sidebar.selectbox(
     [
         "1. Cover Page",
         "2. Kutaa Galmee Barataa (Foormii)",
-        "3.Dashboard Barsiisaa / Gabaasaa (Password Needed)",
+        "3. Kutaa Qophii Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
         "5. Seenaa Seensaa (Login History / Audit)",
         "6. Baasi (Logout)",
@@ -710,8 +710,8 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
 
 # ----------------- 3. DASHBOARD BARSIISAA / GABAASAA -----------------
-elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
-    st.subheader("🔐 Dashboard Barsiisaa / Gabaasaa (Password Needed)")
+elif menu == "3. Kutaa Qophii Gabaasaa (Password Needed)":
+    st.subheader("🔐 Kutaa Qophii Gabaasaa (Password Needed)")
 
     password = st.text_input("Password Galchi", type="password")
 
