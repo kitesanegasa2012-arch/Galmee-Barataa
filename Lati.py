@@ -383,7 +383,7 @@ if not st.session_state.authenticated:
     st.markdown(
         """
         <div class="cover-card" style="max-width: 550px; margin: 50px auto;">
-            <h2>🔐 Seensa Eeyyamaa (Login System)</h2>
+            <h2>🔐 Sirna Eeyyamaa (Login System)</h2>
             <p>App kana fayyadamuuf Gmail fi Password hayyamame galchuun dirqama.</p>
         </div>
         """,
@@ -418,14 +418,14 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ----------------- NAVIGATION / PAGES -----------------
-st.sidebar.markdown(f"👤 **Seenteera:** `{st.session_state.current_user}`")
-st.sidebar.markdown("### 🏫 Mana Barumsaa B/saa Kitesa Negasa")
+st.sidebar.markdown(f"👤 **Seeneera:** `{st.session_state.current_user}`")
+st.sidebar.markdown("### 🏫 Kitesa Negasa Feyisa")
 menu = st.sidebar.selectbox(
-    "Filannoo Fuulaa (Navigation)",
+    "Filannoo Baafataa (Navigation)",
     [
         "1. Cover Page",
-        "2. Dashboard Galmee Barataa (Foomii)",
-        "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
+        "2. Dashboard Galmee Barataa (Foormii)",
+        "3. Dashboard Barsiisaa /kutaa Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
         "5. Seenaa Seensaa (Login History / Audit)",
         "6. Baasii (Logout)",
