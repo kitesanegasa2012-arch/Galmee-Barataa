@@ -613,9 +613,10 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             "Mana Barumsaa Biroo",
             "Irra deebii Mana Barumsaa Biroo",
         ]:
+            saved_name = st.session_state.get("saved_school_name", "")
             auto_school = (
-                st.session_state.saved_school_name
-                if st.session_state.saved_school_name
+                saved_name
+                if saved_name
                 else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
             )
             st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
@@ -623,7 +624,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
         else:
             mb_duraan = st.text_input(
                 "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-                value=st.session_state.form_mb_biroo,
+                value=st.session_state.get("form_mb_biroo", ""),
             )
             avireejjii = st.number_input(
                 "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
