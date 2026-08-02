@@ -633,7 +633,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                         value=st.session_state.form_mb_biroo,
                     )
 
-                avireejjii = st.number_input(
+            avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                     min_value=0.0,
                     max_value=100.0,
@@ -643,6 +643,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C)", value=default_guyyaa)
 
         submitted = st.form_submit_button("💾 Save (Enter)")
+        
         if submitted:
             st.session_state.form_maqaa = maqaa_guutuu
             st.session_state.form_fan = fan_id
@@ -716,7 +717,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     "Guyyaa Galmee (E.C)": guyyaa_galmee_ec,
                     "Barsiisaa Galmeessee": barsiisaa,
                 }
-                # Database-tti fiisaa (save) kan godhu
+                
                 insert_student(new_data)
 
                 st.session_state.form_maqaa = ""
@@ -727,7 +728,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 st.session_state.form_mb_biroo = ""
 
                 st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
-
 # ----------------- 3. DASHBOARD BARSIISAA / GABAASAA -----------------
 elif menu == "3. Kutaa Qophii Gabaasaa (Password Needed)":
     st.subheader("🔐 Kutaa Qophii Gabaasaa (Password Needed)")
