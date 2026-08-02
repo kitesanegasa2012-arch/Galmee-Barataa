@@ -590,7 +590,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 ]
             )
 
-    with col2:
+  with col2:
                 st.markdown("**9. Bakka Dhalootaa** _(galmee dabre irraa ofumaan bahe)_")
                 godina = st.text_input("Godina", value=default_godina)
                 aanaa = st.text_input("Aanaa", value=default_aanaa)
@@ -620,19 +620,21 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     "Irra deebii Mana Barumsaa Biroo",
                 ]:
                     saved_name = st.session_state.get("saved_school_name", "")
-                    auto_school = (
-                        saved_name
-                        if saved_name
-                        else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
-                    )
-                    st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
-                    mb_duraan = auto_school
+                    if saved_name:
+                        st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{saved_name}**")
+                        mb_duraan = saved_name
+                    else:
+                        mb_duraan = st.text_input(
+                            "Maqaa Mana Barumsaa (Dursee kan barachaa ture)",
+                            value=st.session_state.get("form_mb_biroo", ""),
+                        )
                 else:
                     mb_duraan = st.text_input(
                         "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-                        value=st.session_state.form_mb_biroo,
+                        value=st.session_state.get("form_mb_biroo", ""),
                     )
-            avireejjii = st.number_input(
+
+                avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                     min_value=0.0,
                     max_value=100.0,
