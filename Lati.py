@@ -521,10 +521,10 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
     # widget-ootni battalumatti wal hin fudhatan, kanaafuu alatti baafnee
     # jira.)
     # ------------------------------------------------------------------
-    st.markdown("**5. Haala Galmee** _(kana dursanii filadhaa - Tab 14 ofumaan ni jijjiirama)_")
+    st.markdown("**5. Haala Galmee** _(kana dursaa filadhaa ragaan kanarratti hunda'uu waan jiruuf)_")
     haala_galmee = st.selectbox(
         "Haala Galmee Barataa",
-        ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)", "Mana Barumsaa Biroo"],
+        ["Haaraa", "Kan darbe", "Irra deebii (Kufe)", "Irra deebii (Kute)","Irra deebii Mana Barumsaa Biroo", "Mana Barumsaa Biroo"],
         key="haala_galmee_select",
     )
     st.markdown("---")
