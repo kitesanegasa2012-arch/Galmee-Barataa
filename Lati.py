@@ -586,7 +586,7 @@ with st.form("registration_form"):
                     "Dhageettii cimaa", "Dubbii salphaa", "Dubbii cimaa", "Sochii salphaa",
                     "Sochii cimaa", "Saaleessa sammuu", "Currisa hawaasumaa", "Haadhaa fi abbaa dhabuu"
                 ]
-            )ani amma sitti hime hunda sirreessi naaf kenni
+            )
 
 with col2:
             # FIX #5: Godina/Aanaa/Ganda/Barsiisaa/Guyyaa Galmee - galmee
