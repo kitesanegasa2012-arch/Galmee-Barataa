@@ -696,7 +696,6 @@ else:
                         st.info("Barataan miidhama qaamaa qabu hin galmoofne.")
                 else:
                     st.info("Deetaan waligalaa hin jiru.")
-
             with tabG:
                 st.markdown(f"### G. Gabaasa Barattoota Irra Deebi'anii - {school_display}")
                 if not db.empty:
