@@ -7,10 +7,6 @@ import streamlit as st
 st.set_page_config(
     page_title="App Galmee Barattootaa - B/saa Kitesa Negasa",
     page_icon="🎓",from datetime import datetime
-import io
-import sqlite3
-import pandas as pd
-import streamlit as st
 
 # ============================================================================
 # PAGE CONFIGURATION
