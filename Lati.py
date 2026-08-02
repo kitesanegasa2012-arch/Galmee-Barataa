@@ -589,7 +589,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     "Sochii cimaa", "Saaleessa sammuu", "Currisa hawaasumaa", "Haadhaa fi abbaa dhabuu"
                 ]
             )
-
       with col2:
                 st.markdown("**9. Bakka Dhalootaa** _(galmee dabre irraa ofumaan bahe)_")
                 godina = st.text_input("Godina", value=default_godina)
@@ -633,7 +632,6 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                         "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
                         value=st.session_state.get("form_mb_biroo", ""),
                     )
-
                 avireejjii = st.number_input(
                     "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                     min_value=0.0,
