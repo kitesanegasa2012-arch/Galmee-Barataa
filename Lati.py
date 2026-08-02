@@ -152,7 +152,7 @@ if not st.session_state.authenticated:
         <div class="cover-card">
             <h1>🎓 LATI APP </h1>
             <h3>Baga Nagaan Gara App Galmee Barattootaa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
-            <p>Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
+            <p>Sirni kun Adoolessa 2019 kan kalaqame ta'e odeeffannoo guutuu barattootaa galmeessuun, gabaasota addaa addaa qopheessuu fi hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -171,7 +171,7 @@ if not st.session_state.authenticated:
             if email in APPROVED_USERS and APPROVED_USERS[email] == password:
                 st.session_state.authenticated = True
                 st.session_state.current_user = email
-                st.success("Baga nagaan dhuftan!")
+                st.success("Baga nagaan Gara Lati App tti dhuftan!")
                 st.rerun()
             else:
                 st.error("Email ykn Password sirrii miti, ykn eeyyama hin qabdu!")
@@ -203,9 +203,9 @@ else:
     menu = st.sidebar.selectbox(
         "Filannoo Fuulaa (Navigation)",
         [
-            "1. Cover Page",
-            "2. Dashboard Galmee Barataa (Foomii)",
-            "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
+            "1. Fuula jalqabaa (Cover Page)",
+            "2. Dashboard Galmee Barataa (Foormii)",
+            "3. Dashboard Gabaasa Qinda'ee (Password Needed)",
         ],
     )
 
