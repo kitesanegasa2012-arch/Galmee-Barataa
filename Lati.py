@@ -427,12 +427,12 @@ menu = st.sidebar.selectbox(
         "2. Dashboard Galmee Barataa (Foormii)",
         "3. Dashboard Barsiisaa /kutaa Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
-        "5. Seenaa Seensaa (Login History / Audit)",
-        "6. Baasii (Logout)",
+        "5. Kuusaa Itti Fayyadamtoota (Login History / Audit)",
+        "6. Ba'i (Logout)",
     ],
 )
 
-if menu == "6. Baasii (Logout)":
+if menu == "6. Ba'i (Logout)":
     st.session_state.authenticated = False
     st.session_state.current_user = ""
     st.rerun()
@@ -443,10 +443,10 @@ if menu == "1. Cover Page":
         """
         <div class="cover-card">
             <div style="font-size:60px;">🎓</div>
-            <h1>APP GALMEE BARATTOOTAA</h1>
+            <h1>APP SIRNA GALMEE BARATTOOTAA(STUDENT REGESTRATION SYSTEM)</h1>
             <div class="cover-divider"></div>
-            <h3>Baga Nagaan Gara App Galmee Barattootaa Mana Barumsaa B/saa Kitesa Negasaatiin Kalaqaameetti Dhuftan!</h3>
-            <p style="font-size:16px; opacity:0.92;">Sirni kun odeeffannoo barattootaa qabaachuuf, gabaasa oomishuuf fi hordoffii taasisuuf kan qophaa'eedha.</p>
+            <h3>Baga  Gara App Sirna Galmee Barattootaa Kanatti Nagaan Dhuftan!</h3>
+            <p style="font-size:16px; opacity:0.92;">Sirni kun odeeffannoo barattootaa galmeessuuf, gabaasa qindeessuu fi Ragaa barattootaa hordoffii taasisuuf kan qophaa'eedha.</p>
         </div>
         """,
         unsafe_allow_html=True,
