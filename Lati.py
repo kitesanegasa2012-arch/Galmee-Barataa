@@ -8,7 +8,7 @@ import streamlit as st
 # PAGE CONFIGURATION
 # ============================================================================
 st.set_page_config(
-    page_title="App Galmee Barattootaa - B/saa Kitesa Negasa",
+    page_title="Created By Kitesa Negasa Feyisa",
     page_icon="🎓",
     layout="wide",
 )
@@ -130,8 +130,8 @@ CONTACT_INFO_HTML = """
 DB_PATH = "kitesa_negasa_data.db"
 
 STUDENT_COLUMNS = [
-    "Maqaa Guutuu",
-    "Koorniyaa",
+    "Maqaa Guutuu(students full name",
+    "Koorniyaa(Gender)",
     "Kutaa",
     "Daree (Section)",
     "Bara Dhalootaa",
