@@ -425,7 +425,7 @@ menu = st.sidebar.selectbox(
     [
         "1. Cover Page",
         "2. Dashboard Galmee Barataa (Foormii)",
-        "3. Dashboard Barsiisaa/Gabaasaa (Password Needed)",
+        "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)",
         "4. Dashboard Bulchiinsaa (Admin - Password Needed)",
         "5. Seenaa Seensaa (Login History / Audit)",
         "6. Baasi (Logout)",
@@ -496,7 +496,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foormii)":
 
     saved_school_name = get_setting("saved_school_name", "")
 
-    st.markdown("### 🏫 Galmee Maqaa Mana Barumsaa Waliigalaa")
+    st.markdown("### 🏫 Galmee Maqaa Mana Barumsaa ")
     school_input_col1, school_input_col2 = st.columns([3, 1])
     with school_input_col1:
         current_school_name = st.text_input("Maqaa Mana Barumsaa Kanaa (Save akka ta'uuf)", value=saved_school_name)
@@ -711,7 +711,7 @@ elif menu == "2. Dashboard Galmee Barataa (Foormii)":
 
 # ----------------- 3. DASHBOARD BARSIISAA / GABAASAA -----------------
 elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
-    st.subheader("🔐 Dashboard Barsiisaa (Seensa Eeyyamame)")
+    st.subheader("🔐  Dashboard Barsiisaa / Gabaasaa (Password Needed)")
 
     password = st.text_input("Password Galchi", type="password")
 
