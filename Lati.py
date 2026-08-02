@@ -737,42 +737,83 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                         "Dhiira": f"Kar: {t_d} | Raw: {a_d}",
                         "Dhalaa": f"Kar: {t_dh} | Raw: {a_dh}",
                         "Ida'ama": f"Kar: {t_d+t_dh} | Raw: {a_d+a_dh}",
-                        # Values for grouping calculation
-                        "Dhiira_val": a_d,
-                        "Dhalaa_val": a_dh
+                        "Target_Dhiira": t_d,
+                        "Target_Dhalaa": t_dh,
+                        "Actual_Dhiira": a_d,
+                        "Actual_Dhalaa": a_dh
                     })
                 
-                # Custom comparison table following Tab A structure
-                comp_rows_1_6_d = sum(r["Dhiira_val"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
-                comp_rows_1_6_dh = sum(r["Dhalaa_val"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
+                def fmt_val(t_val, a_val):
+                    return f"Kar: {t_val} | Raw: {a_val}"
+
+                t_1_6_d = sum(r["Target_Dhiira"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
+                t_1_6_dh = sum(r["Target_Dhalaa"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
+                a_1_6_d = sum(r["Actual_Dhiira"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
+                a_1_6_dh = sum(r["Actual_Dhalaa"] for r in raw_comparison if int(r["Kutaa_Num"]) <= 6)
                 
-                comp_rows_7_8_d = sum(r["Dhiira_val"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
-                comp_rows_7_8_dh = sum(r["Dhalaa_val"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
+                t_7_8_d = sum(r["Target_Dhiira"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
+                t_7_8_dh = sum(r["Target_Dhalaa"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
+                a_7_8_d = sum(r["Actual_Dhiira"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
+                a_7_8_dh = sum(r["Actual_Dhalaa"] for r in raw_comparison if 7 <= int(r["Kutaa_Num"]) <= 8)
                 
-                comp_rows_9_12_d = sum(r["Dhiira_val"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
-                comp_rows_9_12_dh = sum(r["Dhalaa_val"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
+                t_9_12_d = sum(r["Target_Dhiira"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
+                t_9_12_dh = sum(r["Target_Dhalaa"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
+                a_9_12_d = sum(r["Actual_Dhiira"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
+                a_9_12_dh = sum(r["Actual_Dhalaa"] for r in raw_comparison if int(r["Kutaa_Num"]) >= 9)
 
                 comp_final_table = []
+                
                 for r in raw_comparison:
                     if int(r["Kutaa_Num"]) <= 6:
                         comp_final_table.append({"Kutaa": r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
-                comp_final_table.append({"Kutaa": "Ida'ama Kutaa 1 - 6", "Dhiira": str(comp_rows_1_6_d), "Dhalaa": str(comp_rows_1_6_dh), "Ida'ama": str(comp_rows_1_6_d + comp_rows_1_6_dh)})
+                
+                comp_final_table.append({
+                    "Kutaa": "Ida'ama Kutaa 1 - 6", 
+                    "Dhiira": fmt_val(t_1_6_d, a_1_6_d), 
+                    "Dhalaa": fmt_val(t_1_6_dh, a_1_6_dh), 
+                    "Ida'ama": fmt_val(t_1_6_d + t_1_6_dh, a_1_6_d + a_1_6_dh)
+                })
                 
                 for r in raw_comparison:
                     if 7 <= int(r["Kutaa_Num"]) <= 8:
                         comp_final_table.append({"Kutaa": r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
-                comp_final_table.append({"Kutaa": "Ida'ama Kutaa 7 - 8", "Dhiira": str(comp_rows_7_8_d), "Dhalaa": str(comp_rows_7_8_dh), "Ida'ama": str(comp_rows_7_8_d + comp_rows_7_8_dh)})
                 
-                comp_final_table.append({"Kutaa": "Ida'ama Waliigalaa (1 - 8)", "Dhiira": str(comp_rows_1_6_d + comp_rows_7_8_d), "Dhalaa": str(comp_rows_1_6_dh + comp_rows_7_8_dh), "Ida'ama": str((comp_rows_1_6_d + comp_rows_7_8_d) + (comp_rows_1_6_dh + comp_rows_7_8_dh))})
+                comp_final_table.append({
+                    "Kutaa": "Ida'ama Kutaa 7 - 8", 
+                    "Dhiira": fmt_val(t_7_8_d, a_7_8_d), 
+                    "Dhalaa": fmt_val(t_7_8_dh, a_7_8_dh), 
+                    "Ida'ama": fmt_val(t_7_8_d + t_7_8_dh, a_7_8_d + a_7_8_dh)
+                })
+                
+                comp_final_table.append({
+                    "Kutaa": "Ida'ama Waliigalaa (1 - 8)", 
+                    "Dhiira": fmt_val(t_1_6_d + t_7_8_d, a_1_6_d + a_7_8_d), 
+                    "Dhalaa": fmt_val(t_1_6_dh + t_7_8_dh, a_1_6_dh + a_7_8_dh), 
+                    "Ida'ama": fmt_val((t_1_6_d + t_7_8_d) + (t_1_6_dh + t_7_8_dh), (a_1_6_d + a_7_8_d) + (a_1_6_dh + a_7_8_dh))
+                })
 
                 for r in raw_comparison:
                     if int(r["Kutaa_Num"]) >= 9:
                         comp_final_table.append({"Kutaa": r["Kutaa"], "Dhiira": r["Dhiira"], "Dhalaa": r["Dhalaa"], "Ida'ama": r["Ida'ama"]})
-                comp_final_table.append({"Kutaa": "Ida'ama Kutaa 9 - 12", "Dhiira": str(comp_rows_9_12_d), "Dhalaa": str(comp_rows_9_12_dh), "Ida'ama": str(comp_rows_9_12_d + comp_rows_9_12_dh)})
+                
+                comp_final_table.append({
+                    "Kutaa": "Ida'ama Kutaa 9 - 12", 
+                    "Dhiira": fmt_val(t_9_12_d, a_9_12_d), 
+                    "Dhalaa": fmt_val(t_9_12_dh, a_9_12_dh), 
+                    "Ida'ama": fmt_val(t_9_12_d + t_9_12_dh, a_9_12_d + a_9_12_dh)
+                })
 
-                tot_d = comp_rows_1_6_d + comp_rows_7_8_d + comp_rows_9_12_d
-                tot_dh = comp_rows_1_6_dh + comp_rows_7_8_dh + comp_rows_9_12_dh
-                comp_final_table.append({"Kutaa": "Waliigalaa (1 - 12)", "Dhiira": str(tot_d), "Dhalaa": str(tot_dh), "Ida'ama": str(tot_d + tot_dh)})
+                tot_t_d = t_1_6_d + t_7_8_d + t_9_12_d
+                tot_t_dh = t_1_6_dh + t_7_8_dh + t_9_12_dh
+                tot_a_d = a_1_6_d + a_7_8_d + a_9_12_d
+                tot_a_dh = a_1_6_dh + a_7_8_dh + a_9_12_dh
+                
+                comp_final_table.append({
+                    "Kutaa": "Waliigalaa (1 - 12)", 
+                    "Dhiira": fmt_val(tot_t_d, tot_a_d), 
+                    "Dhalaa": fmt_val(tot_t_dh, tot_a_dh), 
+                    "Ida'ama": fmt_val(tot_t_d + tot_t_dh, tot_a_d + tot_a_dh)
+                })
 
                 comp_df = pd.DataFrame(comp_final_table)
                 st.dataframe(comp_df, use_container_width=True)
@@ -807,3 +848,12 @@ elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
                 st.info("Deetaan galmaa'e hin jiru.")
     else:
         st.error("Password sirrii miti!")
+
+# ----------------- 4. LOGIN HISTORY / AUDIT -----------------
+elif menu == "4. Seenaa Seensaa (Login History / Audit)":
+    st.subheader("📋 Seenaa Seensa Appii (Login History)")
+    if st.session_state.login_history:
+        history_df = pd.DataFrame(st.session_state.login_history)
+        st.dataframe(history_df, use_container_width=True)
+    else:
+        st.info("Seenaan seensaa hanga ammaatti hin jiru.")
