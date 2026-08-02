@@ -733,8 +733,8 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             st.success(f"Galmeen barataa {maqaa_guutuu} milkaa'inaan *Save* ta'eera!")
 
 # ----------------- 3. DASHBOARD BARSIISAA / GABAASAA -----------------
-elif menu == "3. Dashboard Barsiisaa / Gabaasaa (Password Needed)":
-    st.subheader("🔐 Dashboard Barsiisaa (Seensa Eeyyamame)")
+elif menu == "3. Kutaa Qophii Gabaasaa (Password Needed)":
+    st.subheader("🔐 Kutaa Qophii Gabaasaa (Password Needed)")
 
     password = st.text_input("Password Galchi", type="password")
 
