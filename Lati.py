@@ -105,9 +105,6 @@ AUTHORIZED_USERS = {
     "barsiisaa1@gmail.com": "pass1234",
     "bulchaa@gmail.com": "admin2026",
 }
-}
-}
-
 def get_last_location(db, col_name):
     if not db.empty and col_name in db.columns and len(db[col_name].dropna()) > 0:
         return db[col_name].dropna().iloc[-1]
