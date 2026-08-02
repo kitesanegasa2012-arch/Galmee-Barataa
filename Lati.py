@@ -1,4 +1,4 @@
- from datetime import datetime
+from datetime import datetime
 import io
 import pandas as pd
 import streamlit as st
@@ -698,15 +698,17 @@ else:
                     st.info("Deetaan waligalaa hin jiru.")
 
             with tabG:
-                st.markdown(f"### G. Gabaasa Barattoota Irra Deebii (Kufe/Kute) - {school_display}")
+                st.markdown(f"### G. Gabaasa Barattoota Irra Deebi'anii - {school_display}")
                 if not db.empty:
-                    repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
+                    repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
                     if not repeat_df.empty:
-                        st.dataframe(repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Haala Galmee", "Bara Addaan Kute"]], use_container_width=True)
+                        display_repeat_df = repeat_df[["Maqaa Guutuu", "Koorniyaa", "Kutaa", "Umurii", "Haala Galmee", "Bara Addaan Kute"]].copy()
+                        display_repeat_df.columns = ["Maqaa Guutuu", "Saala", "Kutaa", "Umurii", "Haala Irra Deebii", "Bara Irra Deebii"]
+                        st.dataframe(display_repeat_df, use_container_width=True)
 
                         buffer_g = io.BytesIO()
                         with pd.ExcelWriter(buffer_g, engine="openpyxl") as writer:
-                            repeat_df.to_excel(writer, sheet_name="Irra_Deebii", index=False)
+                            display_repeat_df.to_excel(writer, sheet_name="Irra_Deebii", index=False)
                         st.download_button(
                             label="📥 Barattoota Irra Deebii Download",
                             data=buffer_g.getvalue(),
@@ -714,86 +716,77 @@ else:
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         )
                     else:
-                        st.info("Barataan irra deebii galmoofne hin jiru.")
+                        st.info("Barataan irra deebii galmaa'e hin jiru.")
                 else:
                     st.info("Deetaan waligalaa hin jiru.")
 
             with tabH:
                 st.markdown(f"### H. Gabaasa Lakkoofsaa Irra Deebii - {school_display}")
                 if not db.empty:
-                    repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii", na=False)]
+                    repeat_df = db[db["Haala Galmee"].str.contains("Irra deebii|Kan darbe", na=False)]
                     if not repeat_df.empty:
-                        rep_pivot = []
-                        rep_types = repeat_df["Haala Galmee"].unique()
-                        for r_type in rep_types:
-                            row = {"Haala Galmee": r_type}
-                            sub_r = repeat_df[repeat_df["Haala Galmee"] == r_type]
-
-                            d_1_6, dh_1_6, d_7_8, dh_7_8 = 0, 0, 0, 0
-
+                        repeat_summary_data = []
+                        haala_types = repeat_df["Haala Galmee"].unique()
+                        for h_type in haala_types:
+                            row = {"Haala Galmee": h_type}
+                            sub_h = repeat_df[repeat_df["Haala Galmee"] == h_type]
+                            
+                            tot_h = 0
                             for k in range(1, 13):
                                 k_str = str(k)
-                                sub_k = sub_r[sub_r["Kutaa"] == k_str]
-                                cnt = len(sub_k)
+                                cnt = len(sub_h[sub_h["Kutaa"] == k_str])
                                 row[f"Kutaa {k}"] = cnt
+                                tot_h += cnt
+                            row["Ida'ama Waliigalaa"] = tot_h
+                            repeat_summary_data.append(row)
 
-                                if k <= 6:
-                                    d_1_6 += len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
-                                    dh_1_6 += len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
-                                elif 7 <= k <= 8:
-                                    d_7_8 += len(sub_k[sub_k["Koorniyaa"] == "Dhiira"])
-                                    dh_7_8 += len(sub_k[sub_k["Koorniyaa"] == "Dhalaa"])
-
-                            row["Ida'ama 1-6"] = d_1_6 + dh_1_6
-                            row["Ida'ama 7-8"] = d_7_8 + dh_7_8
-                            row["Ida'ama Waliigalaa"] = sum(row.get(f"Kutaa {k}", 0) for k in range(1, 13))
-                            rep_pivot.append(row)
-
-                        rep_summary_df = pd.DataFrame(rep_pivot)
-                        st.dataframe(rep_summary_df, use_container_width=True)
+                        rep_sum_df = pd.DataFrame(repeat_summary_data)
+                        st.dataframe(rep_sum_df, use_container_width=True)
 
                         buffer_h = io.BytesIO()
                         with pd.ExcelWriter(buffer_h, engine="openpyxl") as writer:
-                            rep_summary_df.to_excel(writer, sheet_name="Lak_Irra_Deebii", index=False)
+                            rep_sum_df.to_excel(writer, sheet_name="Lakkoofsa_Irra_Deebii", index=False)
                         st.download_button(
                             label="📥 Lakkoofsa Irra Deebii Download",
                             data=buffer_h.getvalue(),
-                            file_name="Lakkoofsa_Irra_Deebii.xlsx",
+                            file_name="Lakkoofsa_Barattoota_Irra_Deebii.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         )
                     else:
-                        st.info("Barataan irra deebii galmoofne hin jiru.")
+                        st.info("Barataan irra deebii galmaa'e hin jiru.")
                 else:
                     st.info("Deetaan waligalaa hin jiru.")
 
             with tabEdit:
-                st.markdown(f"### ✏️ Sirreeffama (Edit / Delete) Barattootaa - {school_display}")
+                st.markdown("### ✏️ Sirreeffama (Edit) ykn Haquu (Delete) Deetaa Barattootaa")
                 if not db.empty:
                     student_names = db["Maqaa Guutuu"].tolist()
-                    selected_student = st.selectbox("Barataa Sirreessuu/Haquu barbaaddu filadhu", student_names)
+                    selected_student = st.selectbox("Barataa Sirreessuu ykn Haquu barbaaddu filadhu", student_names)
+                    
+                    student_row = db[db["Maqaa Guutuu"] == selected_student].iloc[0]
+                    idx = db[db["Maqaa Guutuu"] == selected_student].index[0]
 
-                    s_row = db[db["Maqaa Guutuu"] == selected_student].iloc[0]
-                    s_idx = db[db["Maqaa Guutuu"] == selected_student].index[0]
-
-                    with st.form("edit_form"):
-                        st.write(f"Odeeffannoo Barataa: **{selected_student}** (Kutaa: {s_row['Kutaa']})")
-                        new_name = st.text_input("Maqaa Guutuu", value=s_row["Maqaa Guutuu"])
-                        new_kutaa = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(s_row["Kutaa"])-1 if s_row["Kutaa"].isdigit() else 0)
-                        new_koorniyaa = st.selectbox("Koorniyaa", ["Dhiira", "Dhalaa"], index=0 if s_row["Koorniyaa"] == "Dhiira" else 1)
-
-                        update_btn = st.form_submit_button("🔄 Galmee Haareessi (Update)")
-                        delete_btn = st.form_submit_button("🗑️ Barataa Haquu (Delete)")
+                    with st.form("edit_student_form"):
+                        e_name = st.text_input("Maqaa Guutuu", value=student_row["Maqaa Guutuu"])
+                        e_grade = st.selectbox("Kutaa", [str(i) for i in range(1, 13)], index=int(student_row["Kutaa"])-1)
+                        e_gender = st.selectbox("Koorniyaa", ["Dhiira", "Dhalaa"], index=0 if student_row["Koorniyaa"] == "Dhiira" else 1)
+                        e_phone = st.text_input("Lakk Bilbila Barataa", value=student_row["Lakk Bilbila Barataa"])
+                        
+                        col_update, col_delete = st.columns(2)
+                        update_btn = col_update.form_submit_button("💾 Jijjiirama Save Gochuu")
+                        delete_btn = col_delete.form_submit_button("🗑️ Barataa Kana Haquu (Delete)")
 
                         if update_btn:
-                            st.session_state.students_db.at[s_idx, "Maqaa Guutuu"] = new_name
-                            st.session_state.students_db.at[s_idx, "Kutaa"] = new_kutaa
-                            st.session_state.students_db.at[s_idx, "Koorniyaa"] = new_koorniyaa
-                            st.success("Odeeffannoon barataa milkaa'inaan haaromfameera!")
+                            st.session_state.students_db.at[idx, "Maqaa Guutuu"] = e_name
+                            st.session_state.students_db.at[idx, "Kutaa"] = e_grade
+                            st.session_state.students_db.at[idx, "Koorniyaa"] = e_gender
+                            st.session_state.students_db.at[idx, "Lakk Bilbila Barataa"] = e_phone
+                            st.success(f"Odeeffannoon barataa {e_name} milkaa'inaan haaromfameera (Updated)!")
                             st.rerun()
 
                         if delete_btn:
-                            st.session_state.students_db = st.session_state.students_db.drop(s_idx).reset_index(drop=True)
-                            st.success("Barataan kun galmeedhaa haqameera!")
+                            st.session_state.students_db = st.session_state.students_db.drop(idx).reset_index(drop=True)
+                            st.warning(f"Barataan {selected_student} galmee keessaa haqameera!")
                             st.rerun()
                 else:
-                    st.info("Deetaan barataa sirreeffamu hin jiru.")
+                    st.info("Deetaan barataa galmaa'e hin jiru.")                                                     
