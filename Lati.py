@@ -108,6 +108,7 @@ AUTHORIZED_USERS = {
 }
 }
 }
+}
 
 def get_last_location(db, col_name):
     if not db.empty and col_name in db.columns and len(db[col_name].dropna()) > 0:
