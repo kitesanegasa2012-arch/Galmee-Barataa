@@ -559,7 +559,7 @@ else:
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     )
                 else:
-                    st.info("Deetaan galmaa'e hin jiru.")
+                    st.info("Deetaan barataa galmaa'e hin jiru.")
 
             with tabC:
                 st.markdown(f"### C. Gabaasa Galmee Guyyaa Tokkoo - {school_display}")
@@ -789,5 +789,5 @@ else:
                             st.warning(f"Barataan {selected_student} galmee keessaa haqameera!")
                             st.rerun()
                 else:
-                    st.info("Deetaan barataa galmaa'e hin jiru.")                                                   student_row = db[db["Maqaa Guutuu"] == selected_student].iloc[0]
-                     
+                    st.info("Deetaan barataa galmaa'e hin jiru.") 
+                         
