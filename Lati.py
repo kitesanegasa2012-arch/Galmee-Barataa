@@ -536,7 +536,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
     if "form_haadhaa" not in st.session_state: st.session_state.form_haadhaa = ""
     if "form_mb_biroo" not in st.session_state: st.session_state.form_mb_biroo = ""
 
-with st.form("registration_form"):
+    with st.form("registration_form"):
         col1, col2 = st.columns(2)
 
         with col1:
