@@ -610,21 +610,21 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             # irratti hundaa'ee ofumaan jijjiirama - radio button dabre hin
             # barbaachisu.
         if haala_galmee not in [
-                    "Mana Barumsaa Biroo",
-                    "Irra deebii Mana Barumsaa Biroo",
-                ]:
-                 auto_school = (
-                        st.session_state.saved_school_name
-                        if st.session_state.saved_school_name
-                        else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
-                    )
-                    st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
-                    mb_duraan = auto_school
-                else:
-                    mb_duraan = st.text_input(
-                        "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-                        value=st.session_state.form_mb_biroo,
-          )
+            "Mana Barumsaa Biroo",
+            "Irra deebii Mana Barumsaa Biroo",
+        ]:
+            auto_school = (
+                st.session_state.saved_school_name
+                if st.session_state.saved_school_name
+                else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
+            )
+            st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
+            mb_duraan = auto_school
+        else:
+            mb_duraan = st.text_input(
+                "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
+                value=st.session_state.form_mb_biroo,
+            )
             avireejjii = st.number_input(
                 "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
                 min_value=0.0, max_value=100.0, value=75.0,
