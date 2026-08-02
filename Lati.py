@@ -535,114 +535,103 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
     if "form_p_maatii" not in st.session_state: st.session_state.form_p_maatii = ""
     if "form_haadhaa" not in st.session_state: st.session_state.form_haadhaa = ""
     if "form_mb_biroo" not in st.session_state: st.session_state.form_mb_biroo = ""
-   with st.form("registration_form"):
+  with st.form("registration_form"):
         col1, col2 = st.columns(2)
-              with col1:
-                maqaa_guutuu = st.text_input("1. Maqaa Guutuu Barataa", value=st.session_state.form_maqaa)
-                koorniyaa = st.selectbox("2. Koorniyaa", ["Filadhu", "Dhiira", "Dhalaa"])
 
-                grade_col1, grade_col2 = st.columns(2)
-                kutaa = grade_col1.selectbox("3. Kutaa", [str(i) for i in range(1, 13)])
-                daree = grade_col2.selectbox("Daree (Section)", [chr(65 + i) for i in range(11)])
+        with col1:
+            maqaa_guutuu = st.text_input("1. Maqaa Guutuu Barataa", value=st.session_state.form_maqaa)
+            koorniyaa = st.selectbox("2. Koorniyaa", ["Filadhu", "Dhiira", "Dhalaa"])
 
-                st.markdown("**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**")
-                b_col1, b_col2, b_col3 = st.columns(3)
-                b_guyyaa = b_col1.selectbox("Guyyaa", [str(i) for i in range(1, 32)])
-                b_jiia = b_col2.selectbox(
-                    "Ji'a",
-                    [
-                        "Fulbaana", "Onkololeessa", "Sadaasa", "Muddee",
-                        "Amajjii", "Guraandhala", "Bitootessa", "Ebla", "Caamsaa",
-                        "Waxabajjii", "Aoleessa", "Hagayya", "Pagume",
-                    ],
-                )
-                b_bara = b_col3.number_input(
-                    "Bara Dhalootaa (Fkn: 2011)", min_value=1990, max_value=2025, value=2011
-                )
-                current_et_year = 2018
-                umurii = current_et_year - b_bara
+            grade_col1, grade_col2 = st.columns(2)
+            kutaa = grade_col1.selectbox("3. Kutaa", [str(i) for i in range(1, 13)])
+            daree = grade_col2.selectbox("Daree (Section)", [chr(65 + i) for i in range(11)])
 
-                st.text_input("5. Haala Galmee (Filatame)", value=haala_galmee, disabled=True)
+            st.markdown("**4. Bara Dhalootaa (Akka Lakkoofsa Itoophiyyatti)**")
+            b_col1, b_col2, b_col3 = st.columns(3)
+            b_guyyaa = b_col1.selectbox("Guyyaa", [str(i) for i in range(1, 32)])
+            b_jiia = b_col2.selectbox(
+                "Ji'a",
+                [
+                    "Fulbaana", "Onkololeessa", "Sadaasa", "Muddee",
+                    "Amajjii", "Guraandhala", "Bitootessa", "Ebla", "Caamsaa",
+                    "Waxabajjii", "Aoleessa", "Hagayya", "Pagume",
+                ],
+            )
+            b_bara = b_col3.number_input(
+                "Bara Dhalootaa (Fkn: 2011)", min_value=1990, max_value=2025, value=2011
+            )
+            current_et_year = 2018
+            umurii = current_et_year - b_bara
 
-                bara_addaan_kute = st.selectbox(
-                    "Bara Addaan Kute (Yoo kute/kufe)",
-                    ["Hin jiru", "2005", "2006", "2007", "2008", "2009", "2010"]
-                    + [str(y) for y in range(2011, 2027)],
-                )
+            st.text_input("5. Haala Galmee (Filatame)", value=haala_galmee, disabled=True)
 
-                haala_maatii = st.selectbox(
-                    "6. Haala Maatii",
-                    ["Lachuu qaba", "Abbaa qofa", "Haadha qofa", "Lachuu hin qabu"],
-                )
+            bara_addaan_kute = st.selectbox(
+                "Bara Addaan Kute (Yoo kute/kufe)",
+                ["Hin jiru", "2005", "2006", "2007", "2008", "2009", "2010"]
+                + [str(y) for y in range(2011, 2027)],
+            )
 
-                miidhama_qaamaa = st.selectbox(
-                    "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
-                )
+            haala_maatii = st.selectbox(
+                "6. Haala Maatii",
+                ["Lachuu qaba", "Abbaa qofa", "Haadha qofa", "Lachuu hin qabu"],
+            )
 
-                gosa_miidhamaa = st.selectbox(
-                    "8. Gosa Miidhama Qaamaa (Yoo Jira ta'e filadhu)",
-                    [
-                        "Hin qabu", "Arguu salphaa", "Arguu cimaa", "Dhageettii salphaa",
-                        "Dhageettii cimaa", "Dubbii salphaa", "Dubbii cimaa", "Sochii salphaa",
-                        "Sochii cimaa", "Saaleessa sammuu", "Currisa hawaasumaa", "Haadhaa fi abbaa dhabuu"
-                    ]
-                )
+            miidhama_qaamaa = st.selectbox(
+                "7. Haala Miidhama Qaamaa", ["Hin jiru", "Jira"]
+            )
 
-            with col2:
-                st.markdown("**9. Bakka Dhalootaa** _(galmee dabre irraa ofumaan bahe)_")
-                godina = st.text_input("Godina", value=default_godina)
-                aanaa = st.text_input("Aanaa", value=default_aanaa)
-                ganda = st.text_input("Ganda", value=default_ganda)
+            gosa_miidhamaa = st.selectbox(
+                "8. Gosa Miidhama Qaamaa (Yoo Jira ta'e filadhu)",
+                [
+                    "Hin qabu", "Arguu salphaa", "Arguu cimaa", "Dhageettii salphaa",
+                    "Dhageettii cimaa", "Dubbii salphaa", "Dubbii cimaa", "Sochii salphaa",
+                    "Sochii cimaa", "Saaleessa sammuu", "Currisa hawaasumaa", "Haadhaa fi abbaa dhabuu"
+                ]
+            )ani amma sitti hime hunda sirreessi naaf kenni
 
-                maqaa_haadhaa = st.text_input(
-                    "10. Maqaa Guutuu Haadhaa ykn Guddistuu",
-                    value=st.session_state.form_haadhaa,
-                )
-                fan_id = st.text_input(
-                    "11. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID - Digiti 16)",
-                    value=st.session_state.form_fan,
-                )
-                lakk_bilbila_barataa = st.text_input(
-                    "12. Lakkoofsa Bilbila Barataa (+251...)",
-                    value=st.session_state.form_p_barataa,
-                )
-                lakk_bilbila_maatii = st.text_input(
-                    "13. Lakkoofsa Bilbila Maatii (+251...)",
-                    value=st.session_state.form_p_maatii,
-                )
-                st.markdown("---")
-                st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
+with col2:
+            # FIX #5: Godina/Aanaa/Ganda/Barsiisaa/Guyyaa Galmee - galmee
+            # dabre irraa ofumaan ba'u (default value), garuu yoo barbaachise
+            # sirreeffamuu ni danda'u.
+            st.markdown("**9. Bakka Dhalootaa** _(galmee dabre irraa ofumaan bahe)_")
+            godina = st.text_input("Godina", value=default_godina)
+            aanaa = st.text_input("Aanaa", value=default_aanaa)
+            ganda = st.text_input("Ganda", value=default_ganda)
 
-                if haala_galmee not in [
-                    "Mana Barumsaa Biroo",
-                    "Irra deebii Mana Barumsaa Biroo",
-                ]:
-                    saved_name = st.session_state.get("saved_school_name", "")
-                    if saved_name:
-                        st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{saved_name}**")
-                        mb_duraan = saved_name
-                    else:
-                        mb_duraan = st.text_input(
-                            "Maqaa Mana Barumsaa (Dursee kan barachaa ture)",
-                            value=st.session_state.get("form_mb_biroo", ""),
-                        )
-                else:
-                    mb_duraan = st.text_input(
-                        "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
-                        value=st.session_state.get("form_mb_biroo", ""),
-                    )
+            maqaa_haadhaa = st.text_input("10. Maqaa Guutuu Haadhaa ykn Guddistuu", value=st.session_state.form_haadhaa)
+            fan_id = st.text_input("11. Lakkoofsa Waraqaa Eenyummaa Dijitaalaa (FAN ID - Digiti 16)", value=st.session_state.form_fan)
+            lakk_bilbila_barataa = st.text_input("12. Lakkoofsa Bilbila Barataa (+251...)", value=st.session_state.form_p_barataa)
+            lakk_bilbila_maatii = st.text_input("13. Lakkoofsa Bilbila Maatii (+251...)", value=st.session_state.form_p_maatii)
+            st.markdown("---")
+            st.markdown("**14. Mana Barumsaa Duraan Itti Barachaa Ture / Biroo**")
+            # FIX #4: Tab 14 kun amma "Haala Galmee" (armaan olitti filatame)
+            # irratti hundaa'ee ofumaan jijjiirama - radio button dabre hin
+            # barbaachisu.
+        if haala_galmee not in [
+            "Mana Barumsaa Biroo",
+            "Irra deebii Mana Barumsaa Biroo",
+        ]:
+            saved_name = st.session_state.get("saved_school_name", "")
+            auto_school = (
+                saved_name
+                if saved_name
+                else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
+            )
+            st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
+            mb_duraan = auto_school
+        else:
+            mb_duraan = st.text_input(
+                "Maqaa Mana Barumsaa Biroo (Mana barumsaa barataan irraa dhufe)",
+              value=st.session_state.form_mb_biroo,
+            )
+            avireejjii = st.number_input(
+                "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
+                min_value=0.0, max_value=100.0, value=75.0,
+            )
+            barsiisaa = st.text_input("16. Barsiisaa Galmeessee", value=default_barsiisaa)
+            guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C)", value=default_guyyaa)
 
-                avireejjii = st.number_input(
-                    "15. Avireejjii Qabxii Bara Darbee (0 - 100)",
-                    min_value=0.0,
-                    max_value=100.0,
-                    value=75.0,
-                )
-                barsiisaa = st.text_input("16. Barsiisaa Galmeessee", value=default_barsiisaa)
-                guyyaa_galmee_ec = st.text_input("Guyyaa Galmee (E.C)", value=default_guyyaa)
-
-            submitted = st.form_submit_button("💾 Save (Enter)")
-            
+        submitted = st.form_submit_button("💾 Save (Enter)")
         if submitted:
             st.session_state.form_maqaa = maqaa_guutuu
             st.session_state.form_fan = fan_id
@@ -658,9 +647,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                 error_msgs.append("Maaloo Koorniyaa barataa filadhu!")
 
             if avireejjii < 50 and haala_galmee != "Irra deebii (Kufe)":
-                error_msgs.append(
-                    'Barataan avireejjii 50 gadi fide haala galmeen "Irra deebii (Kufe)" jedhuun walsimuu qaba!'
-                )
+                error_msgs.append('Barataan avireejjii 50 gadi fide haala galmeen "Irra deebii (Kufe)" jedhuun walsimuu qaba!')
 
             clean_fan = fan_id.strip()
             if clean_fan and (not clean_fan.isdigit() or len(clean_fan) != 16):
@@ -677,20 +664,15 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
 
             if lakk_bilbila_barataa.strip():
                 err_p1 = validate_phone(lakk_bilbila_barataa, "Bilbila Barataa")
-                if err_p1:
-                    error_msgs.append(err_p1)
+                if err_p1: error_msgs.append(err_p1)
 
             if lakk_bilbila_maatii.strip():
                 err_p2 = validate_phone(lakk_bilbila_maatii, "Bilbila Maatii")
-                if err_p2:
-                    error_msgs.append(err_p2)
+                if err_p2: error_msgs.append(err_p2)
 
             if error_msgs:
                 for err in error_msgs:
-                    st.markdown(
-                        f'<p style="color:red; font-weight:bold;">⚠️ {err}</p>',
-                        unsafe_allow_html=True,
-                    )
+                    st.markdown(f'<p style="color:red; font-weight:bold;">⚠️ {err}</p>', unsafe_allow_html=True)
             else:
                 new_data = {
                     "Maqaa Guutuu": maqaa_guutuu,
@@ -715,6 +697,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
                     "Avireejjii Qabxii": avireejjii,
                     "Guyyaa Galmee (E.C)": guyyaa_galmee_ec,
                     "Barsiisaa Galmeessee": barsiisaa,
+
                 }
                 
                 # Database-tti fiisaa (save) kan godhu
