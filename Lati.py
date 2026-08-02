@@ -553,9 +553,9 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             b_jiia = b_col2.selectbox(
                 "Ji'a",
                 [
-                    "Fulbaana", "Onkololeessa", "Hacaaluu/Hidar", "Tamsaasa/Tahsas",
+                    "Fulbaana", "Onkololeessa", "Sadaasa", "Muddee",
                     "Amajjii", "Guraandhala", "Bitootessa", "Ebla", "Caamsaa",
-                    "Waxabajjii", "Aoleessa/Hamle", "Hagayya", "Pagume",
+                    "Waxabajjii", "Aoleessa", "Hagayya", "Pagume",
                 ],
             )
             b_bara = b_col3.number_input(
@@ -610,7 +610,7 @@ elif menu == "2. Kutaa Galmee Barataa (Foormii)":
             # FIX #4: Tab 14 kun amma "Haala Galmee" (armaan olitti filatame)
             # irratti hundaa'ee ofumaan jijjiirama - radio button dabre hin
             # barbaachisu.
-            if haala_galmee != "Mana Barumsaa Biroo","Irra deebii Mana Barumsaa Biroo", :
+            if haala_galmee != "Mana Barumsaa Biroo",
                 auto_school = saved_school_name if saved_school_name else "Hin jiru (Dursee Maqaa Mana Barumsaa Save Godhi)"
                 st.info(f"Maqaan Mana Barumsaa Ofumaan Guutame: **{auto_school}**")
                 mb_duraan = auto_school
