@@ -12,7 +12,6 @@ st.set_page_config(
     page_icon="🎓",
     layout="wide",
 )
-
 # ============================================================================
 # FIX #1: DIZAAYINII COVER PAGE / WALIIGALAA (nicer fonts, gradient, borders)
 # ============================================================================
