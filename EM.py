@@ -896,4 +896,6 @@ elif menu == "1. Cover Page | Fuula Jalqabaa":
     if school_name_cover:
         st.markdown(
             f"""
-            <div style="text-align
+            <div style="text-align:center; margin-top:25px; padding:15px; 
+                 background:linear-gradient(135deg, #4e73df, #2e59d9); 
+                 border-radius:12px;
