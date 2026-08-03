@@ -29,7 +29,6 @@ st.markdown(
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     }
 
-    /* === COVER CARD - Premium Design === */
     .cover-card {
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #533483 100%);
         padding: 60px 40px;
@@ -132,7 +131,6 @@ st.markdown(
         z-index: 1;
     }
 
-    /* === METRIC CARDS === */
     .metric-card {
         background: linear-gradient(145deg, #ffffff, #f0f4ff);
         border: 2px solid #e3e6f0;
@@ -171,7 +169,6 @@ st.markdown(
         font-weight: 400;
     }
 
-    /* === CONTACT CARD === */
     .contact-card {
         background: linear-gradient(135deg, #ffffff 0%, #eef2f9 100%);
         border: 2px solid #4e73df;
@@ -201,7 +198,6 @@ st.markdown(
         font-weight: 400;
     }
 
-    /* === BUTTONS === */
     .stButton>button {
         background: linear-gradient(135deg, #4e73df 0%, #2e59d9 100%);
         color: white;
@@ -220,14 +216,12 @@ st.markdown(
         box-shadow: 0 8px 25px rgba(78,115,223,0.4);
     }
 
-    /* === HEADINGS === */
     h1, h2, h3, h4, h5 {
         color: #1e3c72;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
     }
 
-    /* === TAB STYLING === */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
         background: #f0f4ff;
@@ -254,7 +248,6 @@ st.markdown(
         background: rgba(78,115,223,0.1);
     }
 
-    /* === SIDEBAR === */
     .css-1d391kg {
         background: linear-gradient(180deg, #1a1a2e, #16213e);
     }
@@ -263,14 +256,12 @@ st.markdown(
         color: white;
     }
 
-    /* === DATA FRAME === */
     .stDataFrame {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
-    /* === INFO BOXES === */
     .stAlert {
         border-radius: 12px !important;
     }
@@ -292,11 +283,10 @@ CONTACT_INFO_HTML = """
 """
 
 # ============================================================================
-# DATABASE (SQLite) - PERSISTENT STORAGE
+# DATABASE (SQLite)
 # ============================================================================
 DB_PATH = "kitesa_negasa_data.db"
 
-# STUDENT COLUMNS
 STUDENT_COLUMNS = [
     "Maqaa Guutuu",
     "Koorniyaa",
@@ -872,9 +862,8 @@ menu = st.sidebar.selectbox(
 )
 
 # ============================================================================
-# MENU HANDLING
+# 8. LOGOUT
 # ============================================================================
-
 if menu == "8. Logout | Baasi":
     st.session_state.authenticated = False
     st.session_state.current_user = ""
@@ -907,4 +896,8 @@ elif menu == "1. Cover Page | Fuula Jalqabaa":
     if school_name_cover:
         st.markdown(
             f"""
-           
+            <div style="text-align:center; margin-top:25px; padding:15px; 
+                 background:linear-gradient(135deg, #4e73df, #2e59d9); 
+                 border-radius:12px; color:white;">
+                <h3 style="color:white; margin:0;">🏫 {school_name_cover}</h3>
+                <p style="margin:5px 0 0; opacity:0.8;">Academic Year / Bara Barnootaa:
