@@ -896,8 +896,4 @@ elif menu == "1. Cover Page | Fuula Jalqabaa":
     if school_name_cover:
         st.markdown(
             f"""
-            <div style="text-align:center; margin-top:25px; padding:15px; 
-                 background:linear-gradient(135deg, #4e73df, #2e59d9); 
-                 border-radius:12px; color:white;">
-                <h3 style="color:white; margin:0;">🏫 {school_name_cover}</h3>
-                <p style="margin:5px 0 0; opacity:0.8;">Academic Year / Bara Barnootaa:
+            <div style="text-align
