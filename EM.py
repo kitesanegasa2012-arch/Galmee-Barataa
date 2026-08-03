@@ -801,4 +801,347 @@ if not st.session_state.authenticated:
             <h1 style="font-size:32px;">Login | Eeyyama</h1>
             <div class="cover-divider"></div>
             <p style="font-size:16px; opacity:0.9;">Please enter your Gmail and Password to access the system.</p>
-            <p style="font-size
+            <p style="font-size:14px; opacity:0.7;">Maaloo Gmail fi Password galchi.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        with st.form("login_form"):
+            input_email = st.text_input("Gmail / Email")
+            input_password = st.text_input("Password", type="password")
+            submit_login = st.form_submit_button("🔑 Seeni (Login)")
+
+            if submit_login:
+                if input_email in AUTHORIZED_USERS and AUTHORIZED_USERS[input_email] == input_password:
+                    st.session_state.authenticated = True
+                    st.session_state.current_user = input_email
+                    save_login(input_email)
+                    st.success("Baga nagaan dhufte! Welcome!")
+                    st.rerun()
+                else:
+                    st.error("Gmail ykn Password sirrii miti! Invalid credentials!")
+
+        st.markdown("---")
+        st.markdown(CONTACT_INFO_HTML, unsafe_allow_html=True)
+
+    st.stop()
+
+# ============================================================================
+# SIDEBAR NAVIGATION
+# ============================================================================
+st.sidebar.markdown(f"👤 **User:** `{st.session_state.current_user}`")
+st.sidebar.markdown("### 🏫 Kitesa Negasa Feyisa")
+
+all_schools = get_all_schools()
+if all_schools:
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🏫 School Filter | Mana Barumsaa")
+    school_filter = st.sidebar.selectbox(
+        "Select School / Mana Barumsaa Filadhu",
+        ["All Schools / Hunda"] + all_schools,
+        key="school_filter"
+    )
+else:
+    school_filter = "All Schools / Hunda"
+
+menu = st.sidebar.selectbox(
+    "📋 Navigation | Baafataa",
+    [
+        "1. Cover Page | Fuula Jalqabaa",
+        "2. Student Registration | Galmee Barataa",
+        "3. Reports & Dashboard | Gabaasa (Password Needed)",
+        "4. Admin Dashboard | Bulchiinsaa (Password Needed)",
+        "5. Login History | Seenaa Seensaa",
+        "6. Multi-School Dashboard | Manneen Barnootaa",
+        "7. EMIS Data Upload | Ragaa EMIS Fe'uu",
+        "8. Logout | Baasi",
+    ],
+)
+
+# ============================================================================
+# 8. LOGOUT
+# ============================================================================
+if menu == "8. Logout | Baasi":
+    st.session_state.authenticated = False
+    st.session_state.current_user = ""
+    st.rerun()
+
+# ============================================================================
+# 1. COVER PAGE
+# ============================================================================
+elif menu == "1. Cover Page | Fuula Jalqabaa":
+    st.markdown(
+        """
+        <div class="cover-card">
+            <div class="icon">🎓</div>
+            <h1>STUDENT REGISTRATION SYSTEM</h1>
+            <h1 style="font-size:28px; color:#ffd700 !important;">SIRNA GALMEE BARATTOOTAA</h1>
+            <div class="cover-divider"></div>
+            <p class="subtitle">Created By / Kalaqame: <strong>Kitesa Negasa Feyisa</strong></p>
+            <p class="description">
+                This system helps schools register students, track attendance, generate reports, 
+                and manage student data efficiently across multiple schools.<br>
+                <span style="color:#ffd700;">Sirni kun barattoota galmeessuu, gabaasa qindeessuu fi 
+                odeeffannoo barattootaa hordofuuf kan gargaaru.</span>
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    school_name_cover = get_setting("saved_school_name", "")
+    if school_name_cover:
+        st.markdown(
+            f"""
+            <div style="text-align:center; margin-top:25px; padding:15px; 
+                 background:linear-gradient(135deg, #4e73df, #2e59d9); 
+                 border-radius:12px; color:white;">
+                <h3 style="color:white; margin:0;">🏫 {school_name_cover}</h3>
+                <p style="margin:5px 0 0; opacity:0.8;">Academic Year / Bara Barnootaa: {get_setting('bara_barnootaa', '2019')}</p>
+            </div>
+            """
+        )
+
+    st.write("---")
+
+    db = load_students()
+    if school_filter != "All Schools / Hunda" and not db.empty:
+        db = db[db["Mana Barumsaa"] == school_filter]
+
+    st.subheader("📊 Student Count by Grade | Lakkoofsa Barattootaa Kutaa Kutaan")
+
+    cols = st.columns(4)
+    for i in range(1, 13):
+        count = len(db[db["Kutaa"] == str(i)]) if not db.empty else 0
+        with cols[(i - 1) % 4]:
+            st.markdown(
+                f"""
+                <div class="metric-card">
+                    <h4>Kutaa {i} | Grade {i}</h4>
+                    <h2>{count}</h2>
+                    <p>Students | Barattoota</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.write("---")
+    st.markdown(CONTACT_INFO_HTML, unsafe_allow_html=True)
+
+# ============================================================================
+# 2. STUDENT REGISTRATION FORM (SIMPLIFIED)
+# ============================================================================
+elif menu == "2. Student Registration | Galmee Barataa":
+    st.subheader("📝 Student Registration Form | Foormii Galmee Barattootaa")
+    st.info("Please use the student registration form to add new students.")
+    st.markdown("---")
+    st.markdown(CONTACT_INFO_HTML, unsafe_allow_html=True)
+
+# ============================================================================
+# 3. REPORTS & DASHBOARD (SIMPLIFIED)
+# ============================================================================
+elif menu == "3. Reports & Dashboard | Gabaasa (Password Needed)":
+    st.subheader("🔐 Reports & Dashboard | Gabaasa fi Kuusaa")
+
+    password = st.text_input("Enter Password | Password Galchi", type="password")
+
+    if password in REPORT_PASSWORDS:
+        st.success("✅ Access Granted! Seensa Milkaa'e!")
+
+        school_name_display = get_setting("saved_school_name", ".................")
+        bara_barnootaa = st.text_input(
+            "🗓️ Academic Year (E.C) | Bara Barnootaa",
+            value=get_setting("bara_barnootaa", "2019"),
+        )
+        if st.button("Save Academic Year | Bara Barnootaa Save Godhi"):
+            set_setting("bara_barnootaa", bara_barnootaa)
+            st.success("Academic year saved! Bara barnootaa save ta'eera!")
+            st.rerun()
+
+        st.markdown("---")
+
+        db = load_students()
+        if not db.empty:
+            st.dataframe(db, use_container_width=True)
+            
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+                db.to_excel(writer, sheet_name="Students", index=False)
+            st.download_button(
+                label="📥 Download Report | Gabaasa Buqqisaa",
+                data=buffer.getvalue(),
+                file_name=f"Student_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        else:
+            st.info("No students found.")
+    else:
+        if password:
+            st.error("Incorrect password! Password sirrii miti!")
+
+# ============================================================================
+# 4. ADMIN DASHBOARD
+# ============================================================================
+elif menu == "4. Admin Dashboard | Bulchiinsaa (Password Needed)":
+    st.subheader("🛡️ Admin Dashboard | Dashboard Bulchiinsaa")
+    st.caption("This page is for administrators to manage all data.")
+
+    admin_password = st.text_input("Admin Password | Password Galchi", type="password")
+
+    if admin_password == ADMIN_PASSWORD:
+        st.success("✅ Admin Access Granted! Seensa Bulchiinsaa Milkaa'e!")
+
+        db = load_students()
+        st.markdown(f"#### 📊 Total Students | Waliigalaa Barattoota: **{len(db)}**")
+
+        if not db.empty:
+            st.dataframe(db, use_container_width=True)
+
+            buffer_admin = io.BytesIO()
+            with pd.ExcelWriter(buffer_admin, engine="openpyxl") as writer:
+                db.to_excel(writer, sheet_name="Data", index=False)
+            st.download_button(
+                label="📥 Full Data Backup (Excel) | Deetaa Guutuu Backup",
+                data=buffer_admin.getvalue(),
+                file_name=f"Backup_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        else:
+            st.info("No students in database.")
+    else:
+        if admin_password:
+            st.error("Incorrect admin password!")
+
+# ============================================================================
+# 5. LOGIN HISTORY
+# ============================================================================
+elif menu == "5. Login History | Seenaa Seensaa":
+    st.subheader("📋 Login History | Seenaa Seensaa Appii")
+
+    hist_df = load_login_history()
+
+    if not hist_df.empty:
+        st.dataframe(hist_df, use_container_width=True)
+
+        st.markdown("---")
+        st.markdown("#### 🗑️ Delete Login History Records | Seenaa Seensaa Haquu")
+
+        records_to_delete = st.multiselect(
+            "Select records to delete | Seenaa haquuf filadhu:",
+            hist_df["id"].tolist(),
+            format_func=lambda x: f"ID: {x} - {hist_df[hist_df['id']==x]['Gmail'].values[0]}"
+        )
+
+        if st.button("🗑️ Delete Selected Records | Seenaa Filatame Haqi"):
+            if records_to_delete:
+                for rec_id in records_to_delete:
+                    delete_login_record(int(rec_id))
+                st.success(f"{len(records_to_delete)} record(s) deleted.")
+                st.rerun()
+            else:
+                st.warning("Please select records to delete.")
+    else:
+        st.info("No login history yet.")
+
+# ============================================================================
+# 6. MULTI-SCHOOL DASHBOARD
+# ============================================================================
+elif menu == "6. Multi-School Dashboard | Manneen Barnootaa":
+    st.subheader("🏫 Multi-School Dashboard | Kuusaa Manneen Barnootaa Biroo")
+
+    all_schools = get_all_schools()
+
+    if all_schools:
+        st.markdown(f"### 📚 Schools Registered: **{len(all_schools)}**")
+
+        school_stats = []
+        for school in all_schools:
+            school_df = get_students_by_school(school)
+            count = len(school_df)
+            school_stats.append({
+                "School | Mana Barumsaa": school,
+                "Total Students | Barattoota": count,
+                "Last Registration": school_df["Guyyaa Galmee (E.C)"].iloc[-1] if not school_df.empty else "N/A"
+            })
+
+        st.dataframe(pd.DataFrame(school_stats), use_container_width=True)
+
+        st.markdown("---")
+        st.markdown("### 🔍 View School Data")
+
+        selected_school_view = st.selectbox(
+            "Select School to View | Mana Barumsaa Filadhu",
+            all_schools
+        )
+
+        if selected_school_view:
+            school_data = get_students_by_school(selected_school_view)
+            st.dataframe(school_data, use_container_width=True)
+    else:
+        st.info("No schools registered yet.")
+
+    st.markdown("---")
+    st.markdown(CONTACT_INFO_HTML, unsafe_allow_html=True)
+
+# ============================================================================
+# 7. EMIS DATA UPLOAD
+# ============================================================================
+elif menu == "7. EMIS Data Upload | Ragaa EMIS Fe'uu":
+    st.subheader("📤 EMIS Data Upload & Validation | Ragaa EMIS Fe'uu fi Mirkaneessuu")
+    
+    st.info("""
+    **📋 EMIS Data Requirements:**
+    - **Student Basic Data**: Column A (National ID), C (Full Name), D (Father), E (Grandfather), G (Gender), J (DOB), K (Age), M (FAN ID)
+    - **Student Result Data**: Column A (National ID), C (Grade), D (Average Score)
+    """)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        basic_file = st.file_uploader(
+            "📄 Student Basic Data (Column A = National ID)",
+            type=['xlsx', 'xls'],
+            key="emis_basic"
+        )
+    
+    with col2:
+        result_file = st.file_uploader(
+            "📄 Student Result Data (Column A = National ID)",
+            type=['xlsx', 'xls'],
+            key="emis_result"
+        )
+    
+    if basic_file and result_file:
+        with st.spinner("Processing EMIS data..."):
+            basic_df = load_emis_data(basic_file, "basic")
+            result_df = load_emis_data(result_file, "result")
+            
+            if basic_df is not None and result_df is not None:
+                parsed_basic = parse_student_basic_data(basic_df)
+                parsed_result = parse_student_result_data(result_df)
+                
+                if parsed_basic is not None and parsed_result is not None:
+                    emis_data = pd.merge(parsed_basic, parsed_result, on=['National ID'], how='left')
+                    
+                    st.markdown("#### 📊 EMIS Data Preview")
+                    st.dataframe(emis_data.head(10), use_container_width=True)
+                    
+                    app_db = load_students()
+                    
+                    if not app_db.empty:
+                        comparison_result = compare_with_emis(emis_data, app_db)
+                        
+                        col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+                        with col_m1:
+                            st.metric("✅ Matches", len(comparison_result['matches']))
+                        with col_m2:
+                            st.metric("⚠️ Mismatches", len(comparison_result['mismatches']))
+                        with col_m3:
+                            st.metric("📤 EMIS Only", len(comparison_result['emis_not_in_app']))
+                        with col_m4:
+                            st.metric("📥 App Only", len(comparison_result['app_not_in_emis']))
+                    else:
+                        st.warning("No data found in the app database.")
